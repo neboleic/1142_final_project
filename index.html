@@ -1,70 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第六組：Cattttt</title>
+    <style>
+        /* 設定網頁背景顏色 */
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: "Microsoft JhengHei", Arial, sans-serif; /* 加入微軟正黑體讓中文更好看 */
+        }
+
+        /* 卡片本體樣式 */
+        .card {
+            background-color: #000;
+            color: #ffffff; /* 這裡就是讓文字變白色的關鍵 */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            width: 300px;
+            line-height: 1.8;
+        }
+
+        /* 標題樣式 */
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+            color: #f1f1f1;
+        }
+
+        .member-list {
+            margin-top: 15px;
+        }
+    </style>
 </head>
-<style>
-    /* 設定網頁背景顏色 */
-    body {
-        background-color: #1a1a1a;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        font-family: Arial, sans-serif;
-    }
-
-    /* 卡片本體樣式 */
-    .card {
-        background-color: #000;
-        color: #ffffff;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        border: 1px solid #333;
-        width: 300px;
-        line-height: 1.8;
-    }
-
-    /* 標題樣式 */
-    h1 {
-        margin-top: 0;
-        font-size: 1.5rem;
-        border-bottom: 2px solid #444;
-        padding-bottom: 10px;
-        color: #f1f1f1;
-    }
-
-    .member-list {
-        margin-top: 15px;
-    }
-</style>
-
-
 <body>
-    <div class="card"></div>
-        <h1>
-            第六組：Cattttt
-        </h1>
-        <div class="member-list"></div>
-        <div>
-            👑組長:王譯妘
+
+    <div class="card">
+        <h1>第六組：Cattttt</h1>
+        
+        <div class="member-list">
+            <div>👑 組長：王譯妘</div>
+            <div>組員1：吳雨珊</div>
+            <div>組員2：林庭誼</div>
+            <div>組員3：陳珮勻</div>
+            <div>組員4：楊詠棋</div>
         </div>
-        <div>
-            組員1:吳雨珊
-        </div>
-        <div>
-            組員2:林庭誼
-        </div>
-        <div>
-            組員3:陳珮勻
-        </div>
-        <div>
-            組員4:楊詠棋
-        </div>
+    </div>
     
 </body>
 </html>
