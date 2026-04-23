@@ -3,56 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第六組：Cattttt</title>
+    <title>🦄 第六組：Cattttt 🐾</title>
     <style>
-        /* 設定網頁背景顏色 */
+        /* 1. 全網頁背景：夢幻漸層 */
         body {
-            background-color: #1a1a1a;
+            /* 使用粉藍、粉紫、粉紅的漸層 */
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: "Microsoft JhengHei", Arial, sans-serif; /* 加入微軟正黑體讓中文更好看 */
+            font-family: "Microsoft JhengHei", "Apple LiGothic Medium", sans-serif;
+            overflow: hidden; /* 防止泡泡裝飾超出螢幕 */
+            position: relative;
         }
 
-        /* 卡片本體樣式 */
+        /* 2. 卡片本體：毛玻璃泡泡效果 */
         .card {
-            background-color: #000;
-            color: #ffffff; /* 這裡就是讓文字變白色的關鍵 */
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid #333;
-            width: 300px;
-            line-height: 1.8;
+            /* 半透明白色背景 */
+            background: rgba(255, 255, 255, 0.25);
+            /* 模糊背景，創造毛玻璃感 */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            
+            /* 柔和的文字顏色 (深紫) */
+            color: #4a148c; 
+            
+            padding: 40px;
+            border-radius: 30px; /* 更圓潤的角，像泡泡 */
+            
+            /* 夢幻光暈陰影 */
+            box-shadow: 0 8px 32px 0 rgba(183, 114, 255, 0.37);
+            
+            /* 淡淡的白色邊框，增加質感 */
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            
+            width: 320px;
+            line-height: 2;
+            text-align: center; /* 內容置中 */
+            position: relative;
+            z-index: 10; /* 確保卡片在泡泡上方 */
         }
 
-        /* 標題樣式 */
+        /* 3. 標題樣式 */
         h1 {
             margin-top: 0;
-            font-size: 1.5rem;
-            border-bottom: 2px solid #444;
-            padding-bottom: 10px;
-            color: #f1f1f1;
+            font-size: 1.8rem;
+            color: #ffffff;
+            /* 標題文字發光效果 */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 158, 255, 0.5);
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.5); /* 虛線下底線 */
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
 
+        /* 4. 名單樣式 */
         .member-list {
-            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
         }
+
+        .member-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 👑 組長特別樣式 */
+        .leader {
+            color: #ff69b4; /* 粉紅色 */
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+        }
+
+        .icon {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+
+        /* 5. 背景裝飾泡泡 (CSS 繪製) */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 定義不同大小和位置的泡泡 */
+        .bubble-1 { width: 100px; height: 100px; top: 10%; left: 10%; background: rgba(200, 255, 255, 0.3); }
+        .bubble-2 { width: 150px; height: 150px; bottom: 15%; right: 15%; background: rgba(255, 200, 255, 0.3); }
+        .bubble-3 { width: 50px; height: 50px; top: 50%; left: 80%; background: rgba(255, 255, 200, 0.3); }
+        
     </style>
 </head>
 <body>
 
+    <div class="bubble bubble-1"></div>
+    <div class="bubble bubble-2"></div>
+    <div class="bubble bubble-3"></div>
+
     <div class="card">
-        <h1>第六組：Cattttt</h1>
+        <h1>🦄 第六組：Cattttt 🐾</h1>
         
         <div class="member-list">
-            <div>👑 組長：王譯妘</div>
-            <div>組員1：吳雨珊</div>
-            <div>組員2：林庭誼</div>
-            <div>組員3：陳珮勻</div>
-            <div>組員4：楊詠棋</div>
+            <div class="member-item leader">
+                <span class="icon">👑</span>組長：王譯妘
+            </div>
+            <div class="member-item">
+                <span class="icon">✨</span>組員1：吳雨珊
+            </div>
+            <div class="member-item">
+                <span class="icon">🌸</span>組員2：林庭誼
+            </div>
+            <div class="member-item">
+                <span class="icon">🍭</span>組員3：陳珮勻
+            </div>
+            <div class="member-item">
+                <span class="icon">🎈</span>組員4：楊詠棋
+            </div>
         </div>
     </div>
     
