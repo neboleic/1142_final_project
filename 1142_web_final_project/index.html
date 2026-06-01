@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>逃婚密室</title>
+  <title>逃婚門</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="title-screen">
@@ -14,59 +14,94 @@
     <div class="rotate-icon">⟳</div>
   </div>
 
-  <div id="title-wrap">
-    <img id="title-logo" src="public/title.png" alt="遊戲標題">
-
-    <div id="title-buttons">
-      <button class="menu-btn" id="btn-start" onclick="startGame()">
-        <img src="public/button1.png" alt="">
-        <span>開始遊戲</span>
-      </button>
-      <button class="menu-btn" id="btn-continue" onclick="continueGame()">
-        <img src="public/button1.png" alt="">
-        <span>繼續遊戲</span>
-      </button>
+  <div id="title-panel">
+    <!--<img class="title-panel-bg" src="public/menu.png" alt="">-->
+    <div id="title-wrap">
+      <img id="title-logo" src="public/title.png" alt="遊戲標題">
+      <div id="title-buttons">
+        <button class="menu-btn" id="btn-start" onclick="playBtnSound(); startGame()">
+          <img src="public/button1.png" alt="">
+          <span>開始遊戲</span>
+        </button>
+        <button class="menu-btn" id="btn-continue" onclick="playBtnSound(); continueGame()">
+          <img src="public/button1.png" alt="">
+          <span>繼續遊戲</span>
+        </button>
+      </div>
     </div>
-
-    <button id="volume-btn" onclick="toggleVolume()">
-      <img id="volume-icon" src="public/volume_button_open.png" alt="音效">
-    </button>
   </div>
 
-  <audio id="bgm" loop>
-    <!-- <source src="public/bgm_title.mp3"> -->
-  </audio>
+  <!-- 音量鍵（點擊展開滑桿面板，與遊戲畫面行為一致） -->
+  <button id="volume-btn" onclick="toggleVolumePanel(); event.stopPropagation();">
+    <img id="volume-icon" src="public/volume_button.png" alt="音效">
+  </button>
+
+  <!-- 音量面板（reuse game screen的 #volume-panel CSS，封面另有 fixed 定位覆蓋） -->
+  <div id="volume-panel" style="display:none">
+    <span class="vol-label">音量</span>
+    <input type="range" id="volume-slider" min="0" max="100" step="1" value="100"
+           onclick="event.stopPropagation();">
+    <span class="vol-label" id="vol-pct">100%</span>
+  </div>
+
+  <!-- src 直接寫在 audio 標籤上；用 <source> 時 bgm.src 會是空字串導致無法播放 -->
+  <audio id="bgm" src="public/backing_sound.mp3" loop></audio>
+  <audio id="btn-sfx" src="public/button_sound.m4a"></audio>
 
   <script>
-    let muted = false;
+    const bgm    = document.getElementById('bgm');
+    const slider = document.getElementById('volume-slider');
+    const pctEl  = document.getElementById('vol-pct');
+    const icon   = document.getElementById('volume-icon');
+    const panel  = document.getElementById('volume-panel');
 
-    function toggleVolume() {
-      muted = !muted;
-      document.getElementById('bgm').muted = muted;
-      document.getElementById('volume-icon').src = muted
-        ? 'public/volume_button_close.png'
-        : 'public/volume_button_open.png';
+    // ── 按鈕音效 ─────────────────────────────────────
+    function playBtnSound() {
+      const s = document.getElementById('btn-sfx');
+      s.currentTime = 0;
+      s.play().catch(() => {});
     }
 
+    // ── 音量面板開關 ──────────────────────────────────
+    function toggleVolumePanel() {
+      panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    // 點面板外任何地方關閉面板
+    document.addEventListener('click', () => {
+      if (panel.style.display !== 'none') panel.style.display = 'none';
+    });
+
+    // ── 滑桿控制音量 ──────────────────────────────────
+    slider.addEventListener('input', () => {
+      const vol = slider.value / 100;
+      bgm.volume = vol;
+      bgm.muted  = vol === 0;
+      pctEl.textContent = slider.value + '%';
+      icon.src = vol === 0
+        ? 'public/volume_button_close.png'
+        : 'public/volume_button_open.png';
+    });
+
+    // ── 遊戲跳轉 ────────────────────────────────────
     function startGame() {
       localStorage.clear();
       localStorage.setItem('affection', '0');
-      window.location.href = 'game.html';
+      window.location.href = 'scene.html';
     }
 
     function continueGame() {
       const saved = localStorage.getItem('saveScene');
       if (saved) {
-        window.location.href = 'game.html';
+        window.location.href = 'scene.html';
       } else {
         alert('沒有存檔紀錄');
       }
     }
 
-    // 嘗試播放背景音樂（需要使用者互動後才能播）
+    // 第一次點擊後開始播放 BGM（瀏覽器限制：必須有使用者互動才能自動播音）
     document.addEventListener('click', () => {
-      const bgm = document.getElementById('bgm');
-      if (bgm.paused && bgm.src) bgm.play().catch(() => {});
+      if (bgm.paused) bgm.play().catch(() => {});
     }, { once: true });
   </script>
 </body>

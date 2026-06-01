@@ -5,29 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>真愛結局</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    body { display:flex; flex-direction:column; align-items:center; justify-content:center;
-           background:#05101a; color:#c8dff5; text-align:center; gap:2rem; }
-    .ending-title { font-size:2rem; letter-spacing:.2em; }
-    .ending-desc  { font-size:1rem; opacity:.8; max-width:440px; line-height:2; }
-    .ending-img   { max-width:60vw; max-height:50vh; object-fit:contain; }
-    .btn-back { padding:.6rem 2rem; background:rgba(60,120,180,.2);
-                border:1px solid rgba(60,120,180,.5); color:#c8dff5;
-                font-size:1rem; font-family:inherit; cursor:pointer; border-radius:4px; }
-    .btn-back:hover { background:rgba(60,120,180,.4); }
-  </style>
 </head>
-<body>
-  <!-- <img class="ending-img" src="public/ending_love.png" alt="真愛結局"> -->
-  <div class="ending-title">✦ 真愛結局 ✦</div>
-  <p class="ending-desc">
-    打開咖啡廳大門，本來昏暗的空間忽然變得透亮。<br>
-    抬起頭，蔚藍的天空依舊，<br>
-    如同五年前我們所看到的一樣。
-  </p>
-  <audio autoplay loop id="bgm">
-    <!-- <source src="public/bgm_love.mp3"> -->
-  </audio>
-  <button class="btn-back" onclick="window.location.href='index.html'">回到標題</button>
+<body class="ending-page ending-love">
+  <div class="ending-scrim" aria-hidden="true"></div>
+  <div class="ending-content">
+    <!-- TODO: 放 ending_love.png 至 public/ -->
+    <img class="ending-img" src="public/ending_love.png" alt="真愛結局">
+    <div class="ending-title">✦ 真愛結局 ✦</div>
+    <p class="ending-desc">
+      店員揭曉身分——五年前的高中同學。<br>
+      許以安帶著項鍊，與她一起消失在夜色中。
+    </p>
+    <audio autoplay loop id="bgm">
+      <!-- <source src="public/bgm_love.mp3"> -->
+    </audio>
+    <audio id="btn-sfx" src="public/button_sound.m4a"></audio>
+    <button class="btn-back" onclick="playBtnSound(); window.location.href='index.html'">回到標題</button>
+  </div>
+  <script>
+    function playBtnSound() {
+      const s = document.getElementById('btn-sfx');
+      s.currentTime = 0;
+      s.play().catch(() => {});
+    }
+  </script>
 </body>
 </html>

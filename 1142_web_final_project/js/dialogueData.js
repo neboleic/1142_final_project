@@ -15,7 +15,9 @@
 const DIALOGUE = [
 
   // ── 場景 0：咖啡廳座位 ──────────────────────────────
-  { type: 'scene', bg: 'public/dialog.png', character: '', bgm: '' },  // 咖啡廳主廳
+  // 立繪對照：figure_man=顧北辰  figure_yian=許以安（主角通常不顯示）
+  //           figure_boss=待確認（店長 or 顧北辰第二套）  figure_friend=朋友（僅bbcall，不顯示）
+  { type: 'scene', bg: 'public/bar.png', character: 'public/figure_man.png', bgm: 'public/backing_sound.mp3' },  // 咖啡廳主廳，顧北辰入場
 
   { type: 'narration', text: '你聽從父母的安排來到這間摩登咖啡廳相親，說是要讓你先與他們安排的對象見面留下印象，沒什麼問題回來就可以直接結婚。' },
 
@@ -34,7 +36,7 @@ const DIALOGUE = [
   { type: 'thought',  speaker: '許以安', text: '⋯⋯搶手還需要相親嗎⋯⋯' },
   { type: 'thought',  speaker: '許以安', text: '忍不下去了，趕快用bbcall請我朋友來接我好了。' },
 
-  { type: 'sfx', src: '' }, // Line 訊息聲
+  { type: 'sfx', src: 'public/sfx_line.mp3' }, // TODO: 放 sfx_line.mp3 至 public/
   { type: 'narration', text: '畫面顯示bbcall，許發出 995 給朋友。' },
   { type: 'dialogue', speaker: '朋友', text: '? 怎麼了？' },
   { type: 'dialogue', speaker: '許以安', text: '995!!!' },
@@ -44,7 +46,7 @@ const DIALOGUE = [
   { type: 'dialogue', speaker: '許以安', text: '那個，呃⋯⋯不好意思，我朋友有事找我，我離開一下。' },
 
   { type: 'narration', text: '許走到門邊，試圖轉動門鎖。' },
-  { type: 'sfx', src: '' }, // 扭門把音效
+  { type: 'sfx', src: 'public/sfx_door.mp3' }, // TODO: 放 sfx_door.mp3 至 public/
   { type: 'narration', text: '門鎖轉不動。' },
   { type: 'thought',  speaker: '許以安', text: '什麼意思！！！！！門怎麼被鎖住了！' },
 
@@ -82,7 +84,7 @@ const DIALOGUE = [
   { type: 'game', gameId: 2, src: 'games/game2/index.html' },
 
   // ── 場景 3：咖啡廳前台 ─────────────────────────────
-  { type: 'scene', bg: 'public/description.png', character: '' },
+  { type: 'scene', bg: 'public/bar.png', character: '' },
 
   { type: 'dialogue', speaker: '店長', text: '（不用畫出來）燈怎麼滅掉了？' },
   { type: 'dialogue', speaker: '店長', text: '（不用畫出來）是誰把我關起來了！！！' },
@@ -137,7 +139,8 @@ const DIALOGUE = [
   { type: 'scene', bg: 'public/out.png', character: '' },
 
   { type: 'dialogue', speaker: '許以安', text: '終於拿到鑰匙了，趕快去打開大門⋯⋯' },
-  { type: 'sfx', src: '' }, // 驚嚇音效
+  { type: 'sfx', src: 'public/sfx_scare.mp3' }, // TODO: 放 sfx_scare.mp3 至 public/
+  { type: 'scene', character: 'public/figure_man.png' }, // 顧北辰突然出現
   { type: 'dialogue', speaker: '顧北辰', text: '女人！你竟然想跑！休想逃出我的手掌心！' },
   { type: 'thought',  speaker: '許以安', text: '不好，被發現了，快跑啊！' },
 

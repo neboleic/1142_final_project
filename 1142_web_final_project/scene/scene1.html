@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>逃婚密室</title>
+  <title>逃婚門</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="game-screen">
@@ -22,15 +22,12 @@
     <img id="character-sprite" src="" alt="" style="display:none">
   </div>
 
-  <!-- 右側對話卡片 -->
+  <!-- 底部對話橫條（dialog.png 2536×416） -->
   <div id="dialog-card">
-    <img id="dialog-bg" src="public/menu.png" alt="">
-
-    <div id="dialog-content">
-      <!-- 說話者名稱列 -->
-      <div id="speaker-bar" style="display:none">
-        <img src="public/bar.png" alt="">
-        <span id="speaker-name"></span>
+    <div id="dialog-content" class="has-speaker">
+      <!-- 說話者名稱（疊在 dialog.png 左上角標籤區） -->
+      <div id="speaker-bar" style="display:flex">
+        <span id="speaker-name">店員</span>
       </div>
 
       <!-- 旁白 / 描述框 -->
@@ -39,7 +36,7 @@
       </div>
 
       <!-- 對話文字 -->
-      <p id="dialog-text"></p>
+      <p id="dialog-text">對話對話</p>
 
       <!-- 選項按鈕群 -->
       <div id="choices" style="display:none"></div>
@@ -54,12 +51,17 @@
     <button id="hud-menu" onclick="toggleMenu()">
       <img src="public/menu_button.png" alt="選單">
     </button>
-    <button id="hud-save" onclick="saveGame()">
-      <img src="public/storage.png" alt="存檔">
+    <button id="hud-volume" onclick="toggleVolume(); event.stopPropagation();">
+      <img id="hud-volume-icon" src="public/volume_button.png" alt="音效">
     </button>
-    <button id="hud-volume" onclick="toggleVolume()">
-      <img id="hud-volume-icon" src="public/volume_button_open.png" alt="音效">
-    </button>
+  </div>
+
+  <!-- 音量面板（點音量鍵後展開） -->
+  <div id="volume-panel" style="display:none">
+    <span class="vol-label">音量</span>
+    <input type="range" id="volume-slider" min="0" max="100" step="1" value="100"
+           onclick="event.stopPropagation();">
+    <span class="vol-label" id="vol-pct">100%</span>
   </div>
 
   <!-- 選單覆蓋層 -->
@@ -74,14 +76,14 @@
           <img src="public/menu_selec.png" alt=""><span>存檔</span>
         </button>
         <button class="menu-btn" onclick="backToTitle()">
-          <img src="public/out.png" alt=""><span>回標題</span>
+          <img src="public/menu_selec.png" alt=""><span>回標題</span>
         </button>
       </div>
     </div>
   </div>
 
   <audio id="bgm" loop></audio>
-  <audio id="sfx"></audio>
+  <audio id="sfx" ></audio>
 
   <script src="js/dialogueData.js"></script>
   <script src="js/engine.js"></script>

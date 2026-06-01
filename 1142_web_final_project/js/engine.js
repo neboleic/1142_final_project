@@ -22,32 +22,21 @@ const nextHint      = document.getElementById('next-hint');
 const bgmEl         = document.getElementById('bgm');
 const sfxEl         = document.getElementById('sfx');
 
-// #region agent log
-function _dbgLog(location, message, data, hypothesisId) {
-  fetch('http://127.0.0.1:7727/ingest/997f5bb6-8c4b-4454-97a5-28e6ff80fd27', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '7dcc2f' },
-    body: JSON.stringify({
-      sessionId: '7dcc2f', runId: 'pre-fix', hypothesisId,
-      location, message, data, timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-}
-function _probeImage(src, label, hypothesisId) {
-  const img = new Image();
-  img.onload = () => _dbgLog('engine.js:probe', 'image load ok', {
-    label, src, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight,
-  }, hypothesisId);
-  img.onerror = () => _dbgLog('engine.js:probe', 'image load FAIL', { label, src }, hypothesisId);
-  img.src = src;
-}
-// #endregion
-
 // ── 初始化 ──────────────────────────────────────────
 function init() {
   State.affection    = parseInt(localStorage.getItem('affection') || '0');
   State.index        = parseInt(localStorage.getItem('saveScene') || '0');
   State.gameResults  = JSON.parse(localStorage.getItem('gameResults') || '{}');
+
+  // 從小遊戲返回後還原 BGM（新頁面載入後 bgmEl 是空的）
+  const savedBgm = localStorage.getItem('bgmSrc');
+  if (savedBgm) {
+    bgmEl.src = savedBgm;
+    bgmEl.play().catch(() => {
+      // autoplay 被擋：等使用者首次互動再播
+      document.addEventListener('click', () => bgmEl.play().catch(() => {}), { once: true });
+    });
+  }
 
   // 接收遊戲結果
   const pendingGame  = localStorage.getItem('pendingGame');
@@ -72,30 +61,23 @@ function init() {
     if (e.code === 'Space' || e.code === 'Enter') advance();
   });
 
-  // #region agent log
-  const rotateEl = document.getElementById('rotate-prompt');
-  const dialogBg = document.getElementById('dialog-bg');
-  const sceneStyles = sceneBg ? getComputedStyle(sceneBg) : null;
-  _dbgLog('engine.js:init', 'viewport and layout', {
-    innerWidth: window.innerWidth,
-    innerHeight: window.innerHeight,
-    orientation: screen.orientation?.type || (window.innerWidth > window.innerHeight ? 'landscape' : 'portrait'),
-    rotatePromptDisplay: rotateEl ? getComputedStyle(rotateEl).display : null,
-    dialogBgSrc: dialogBg?.src || null,
-    sceneBgSize: sceneStyles?.backgroundSize,
-    sceneBgImage: sceneStyles?.backgroundImage,
-    href: location.href,
-  }, 'A');
-  _probeImage('public/dialog.png', 'scene-asset-dialog', 'B');
-  _probeImage(dialogBg?.getAttribute('src') || 'public/menu.png', 'dialog-card-bg', 'C');
-  _probeImage('public/kitchen.png', 'scene-asset-kitchen', 'D');
-  // #endregion
+  // 所有按鈕點擊音效（capture 優先於 onclick，也涵蓋動態產生的選項按鈕）
+  document.addEventListener('click', e => {
+    if (e.target.closest('button')) playSfx('public/button_sound.m4a');
+  }, true);
 
+  _initVolumeSlider();
   advance();
 }
 
 // ── 推進對話 ────────────────────────────────────────
 function advance() {
+  // 點擊時先關閉音量面板，不繼續推進
+  const volPanel = document.getElementById('volume-panel');
+  if (volPanel && volPanel.style.display !== 'none') {
+    volPanel.style.display = 'none';
+    return;
+  }
   if (choicesEl.style.display !== 'none') return; // 等待選項
   showLine(State.index);
 }
@@ -117,18 +99,8 @@ function showLine(idx) {
     case 'scene':
       if (line.bg) {
         sceneBg.style.backgroundImage = `url('${line.bg}')`;
-        // #region agent log
-        requestAnimationFrame(() => {
-          const cs = getComputedStyle(sceneBg);
-          _dbgLog('engine.js:showLine:scene', 'scene bg applied', {
-            bg: line.bg,
-            backgroundSize: cs.backgroundSize,
-            backgroundPosition: cs.backgroundPosition,
-            sceneBgRect: sceneBg.getBoundingClientRect(),
-          }, 'B');
-        });
-        _probeImage(line.bg, 'scene-bg-' + line.bg, 'D');
-        // #endregion
+        sceneBg.style.backgroundSize = 'cover';
+        sceneBg.style.backgroundPosition = 'center';
       }
       if (line.character) {
         charSprite.src = line.character;
@@ -184,12 +156,13 @@ function showLine(idx) {
 
 // ── 畫面顯示輔助 ────────────────────────────────────
 function setNarration(text) {
-  narrationBox.style.display  = 'flex';
-  speakerBar.style.display    = 'none';
-  narrationText.textContent   = text;
-  dialogText.textContent      = '';
-  choicesEl.style.display     = 'none';
-  nextHint.style.display      = 'block';
+  narrationBox.style.display = 'none';
+  speakerBar.style.display   = 'none';
+  document.getElementById('dialog-content')?.classList.remove('has-speaker');
+  dialogText.style.fontStyle = 'italic';
+  dialogText.textContent     = text;
+  choicesEl.style.display    = 'none';
+  nextHint.style.display     = 'block';
 }
 
 function setDialogue(speaker, text, isThought) {
@@ -197,11 +170,14 @@ function setDialogue(speaker, text, isThought) {
   choicesEl.style.display    = 'none';
   nextHint.style.display     = 'block';
 
+  const dialogContent = document.getElementById('dialog-content');
   if (speaker) {
     speakerBar.style.display = 'flex';
     speakerName.textContent  = speaker;
+    dialogContent?.classList.add('has-speaker');
   } else {
     speakerBar.style.display = 'none';
+    dialogContent?.classList.remove('has-speaker');
   }
 
   dialogText.style.fontStyle = isThought ? 'italic' : 'normal';
@@ -211,15 +187,18 @@ function setDialogue(speaker, text, isThought) {
 function showChoices(choices) {
   narrationBox.style.display = 'none';
   speakerBar.style.display   = 'none';
+  document.getElementById('dialog-content')?.classList.remove('has-speaker');
   nextHint.style.display     = 'none';
   choicesEl.style.display    = 'flex';
   choicesEl.innerHTML        = '';
+  dialogText.textContent     = '';
 
   choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.className     = 'choice-btn';
     btn.textContent   = choice.text;
-    btn.onclick = () => {
+    btn.onclick = (e) => {
+      e.stopPropagation(); // 阻止點擊事件冒泡到 document 的 advance 監聽器
       if (choice.affection) State.affection += choice.affection;
       localStorage.setItem('affection', String(State.affection));
       choicesEl.style.display = 'none';
@@ -260,24 +239,49 @@ function goEnding(type) {
 
 // ── 音效 ────────────────────────────────────────────
 function playBgm(src) {
-  if (!src) { bgmEl.pause(); return; }
+  if (!src) {
+    bgmEl.pause();
+    localStorage.removeItem('bgmSrc');
+    return;
+  }
+  localStorage.setItem('bgmSrc', src);  // 儲存供小遊戲返回後還原
   bgmEl.src = src;
-  bgmEl.play().catch(() => {});
+  bgmEl.play().catch(() => {
+    // autoplay 被擋：等使用者首次互動再播
+    document.addEventListener('click', () => bgmEl.play().catch(() => {}), { once: true });
+  });
 }
 
 function playSfx(src) {
-  if (!src || State.muted) return;
+  if (!src || sfxEl.volume === 0 || bgmEl.muted) return;
+  sfxEl.currentTime = 0;
   sfxEl.src = src;
   sfxEl.play().catch(() => {});
 }
 
 // ── HUD 功能 ────────────────────────────────────────
 function toggleVolume() {
-  State.muted = !State.muted;
-  bgmEl.muted = State.muted;
-  document.getElementById('hud-volume-icon').src = State.muted
-    ? 'public/volume_button_close.png'
-    : 'public/volume_button_open.png';
+  const panel = document.getElementById('volume-panel');
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'flex';
+}
+
+function _initVolumeSlider() {
+  const slider = document.getElementById('volume-slider');
+  const pctLabel = document.getElementById('vol-pct');
+  if (!slider) return;
+
+  slider.addEventListener('input', () => {
+    const vol = slider.value / 100;
+    bgmEl.volume = vol;
+    sfxEl.volume = vol;
+    State.muted = vol === 0;
+    bgmEl.muted = State.muted;
+    if (pctLabel) pctLabel.textContent = slider.value + '%';
+    document.getElementById('hud-volume-icon').src = State.muted
+      ? 'public/volume_button_close.png'
+      : 'public/volume_button_open.png';
+  });
 }
 
 function toggleMenu() {

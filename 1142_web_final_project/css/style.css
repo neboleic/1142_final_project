@@ -22,7 +22,8 @@ html, body {
 .rotate-icon { font-size: 3rem; animation: spin 2s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-@media (orientation: portrait) {
+/* 僅觸控小螢幕直向時提示橫置，避免桌面窄視窗被整頁遮住 */
+@media (orientation: portrait) and (max-width: 900px) and (hover: none) and (pointer: coarse) {
   #rotate-prompt { display: flex; }
 }
 
@@ -30,23 +31,62 @@ html, body {
    標題畫面
 ══════════════════════════════ */
 body.title-screen {
-  background: url('../public/menu.png') center/cover no-repeat;
-  display: flex; align-items: center; justify-content: center;
+  background-image: url('/public/out.png'); /* 填入你的背景圖片檔名 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* 讓整個畫面滿版並讓內容完美居中 */
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* menu.png 直向框（747×1424），內容疊在紙張區 */
+#title-panel {
+  position: relative;
+  width: min(52vh, 88vw);
+  aspect-ratio: 747 / 1424;
+  max-height: 92vh;
+}
+.title-panel-bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 #title-wrap {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 2rem;
-  position: relative;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 30% 14% 24%;
 }
 
 #title-logo {
-  max-width: min(60vw, 500px);
+  width: 88%;
+  max-width: 360px;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.7));
 }
 
 #title-buttons {
-  display: flex; flex-direction: column; gap: 1rem; align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+}
+
+#title-buttons .menu-btn img {
+  width: min(180px, 72%);
 }
 
 .menu-btn {
@@ -72,8 +112,17 @@ body.title-screen {
 #volume-btn {
   position: fixed; bottom: 1.5rem; right: 1.5rem;
   background: none; border: none; cursor: pointer;
+  z-index: 10;
 }
 #volume-btn img { width: 48px; }
+
+/* 封面音量面板：fixed，浮在音量鍵正上方 */
+body.title-screen #volume-panel {
+  position: fixed;
+  bottom: calc(1.5rem + 48px + 0.5rem);
+  right: 1.5rem;
+  top: auto;
+}
 
 /* ══════════════════════════════
    遊戲畫面
@@ -92,12 +141,15 @@ body.game-screen {
   z-index: 1;
 }
 
-/* 角色立繪 */
+/* 角色立繪（對話橫條上方） */
 #character-wrap {
   position: absolute;
-  left: 5%; bottom: 0;
-  height: 95%;
-  display: flex; align-items: flex-end;
+  left: 5%;
+  top: 0;
+  bottom: min(42vh, calc(100vw * 416 / 2536));
+  height: auto;
+  display: flex;
+  align-items: flex-end;
   z-index: 10;
 }
 #character-sprite {
@@ -107,65 +159,62 @@ body.game-screen {
   transition: opacity 0.4s;
 }
 
-/* ── 對話卡片（右側）── */
+/* ── 對話橫條（底部，比例對應 dialog.png 2536×416）── */
 #dialog-card {
   position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 34%;
+  left: 0; right: 0; bottom: 0;
+  width: 100%;
+  aspect-ratio: 2536 / 416;
+  max-height: 42vh;
+  min-height: 100px;
   z-index: 20;
-  display: flex; align-items: stretch;
-  background: #2a1a08; /* 深色底，防止透明區漏出場景 */
-}
-
-#dialog-bg {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: fill;
-  pointer-events: none;
+  background: url('../public/dialog.png') center bottom / 100% 100% no-repeat;
 }
 
 #dialog-content {
-  position: relative; z-index: 1;
-  width: 100%; height: 100%;
-  /* 上下內縮讓文字避開卡片裝飾框邊緣 */
-  padding: 18% 12% 10%;
-  display: flex; flex-direction: column;
-  gap: 0.6rem; overflow: hidden;
-}
-
-/* 說話者名稱列 */
-#speaker-bar {
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 0.3rem;
-}
-#speaker-bar img { width: 100%; }
-#speaker-name {
   position: absolute;
-  font-size: 0.95rem; font-weight: bold;
-  color: #3b1f0a; letter-spacing: 0.12em;
+  inset: 0;
+  z-index: 1;
+  /* 對齊 dialog.png 中央紙張區域 */
+  padding: 2.5% 6% 2% 11%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  overflow: hidden;
+}
+#dialog-content.has-speaker {
+  padding-top: 5%;
 }
 
-/* 旁白框 */
-#narration-box {
-  background: rgba(180, 140, 80, 0.15);
-  border: 1px solid rgba(140, 100, 40, 0.4);
-  border-radius: 4px;
-  padding: 0.5rem 0.7rem;
-  margin-bottom: 0.4rem;
+/* 說話者名稱（dialog.png 內建標籤區） */
+#speaker-bar {
+  position: absolute;
+  top: 4%;
+  left: 9%;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  pointer-events: none;
 }
-#narration-text {
-  font-size: 0.78rem; color: #4a2e0a;
-  font-style: italic;
-  text-align: center;
-  line-height: 1.6;
+#speaker-name {
+  position: static;
+  font-size: clamp(0.75rem, 1.6vw, 0.95rem);
+  font-weight: bold;
+  color: #f5e6c8;
+  letter-spacing: 0.12em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 旁白（使用底部 dialog 框，不再嵌套 description 框） */
+#narration-box {
+  display: none !important;
 }
 
 /* 對話文字 */
 #dialog-text {
-  font-size: 0.88rem;
-  line-height: 1.8;
-  color: #2c1505;
+  font-size: clamp(0.85rem, 1.75vw, 1.05rem);
+  line-height: 1.75;
+  color: #f5e6c8;
   flex: 1;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -180,7 +229,7 @@ body.game-screen {
   background: rgba(180, 130, 60, 0.15);
   border: 1px solid rgba(180, 130, 60, 0.5);
   border-radius: 4px;
-  color: #3b1f0a;
+  color: #f5e6c8;
   font-size: 0.82rem; font-family: inherit;
   padding: 0.4rem 0.6rem;
   cursor: pointer; text-align: left;
@@ -198,9 +247,12 @@ body.game-screen {
 
 /* ── HUD ── */
 #hud {
-  position: absolute; top: 0.8rem; right: 35%;
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
   z-index: 30;
-  display: flex; gap: 0.5rem; padding-right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 }
 #hud button {
   background: none; border: none; cursor: pointer;
@@ -226,11 +278,143 @@ body.game-screen {
   align-items: center; justify-content: center; gap: 1rem;
 }
 
+/* ── 結局畫面 ── */
+body.ending-page {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  overflow: auto;
+}
+.ending-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.ending-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 1.5rem;
+  max-width: 520px;
+}
+.ending-img {
+  max-width: 80vw;
+  max-height: 40vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.ending-title { font-size: 2rem; letter-spacing: 0.2em; }
+.ending-desc {
+  font-size: 1rem;
+  opacity: 0.9;
+  line-height: 2;
+}
+.btn-back {
+  padding: 0.6rem 2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: inherit;
+}
+.btn-back:hover { background: rgba(255, 255, 255, 0.16); }
+
+body.ending-bad {
+  color: #c8a0a0;
+  background: #0d0505 url('../public/out_night.png') center / cover no-repeat;
+}
+body.ending-bad .ending-scrim { background: rgba(13, 5, 5, 0.72); }
+body.ending-bad .btn-back {
+  border-color: rgba(150, 60, 60, 0.5);
+  background: rgba(150, 60, 60, 0.2);
+}
+body.ending-bad .btn-back:hover { background: rgba(150, 60, 60, 0.4); }
+
+body.ending-good {
+  color: #f5e6c8;
+  background: #1a0e05 url('../public/out.png') center / cover no-repeat;
+}
+body.ending-good .ending-scrim { background: rgba(26, 14, 5, 0.65); }
+body.ending-good .btn-back {
+  border-color: rgba(180, 130, 60, 0.5);
+  background: rgba(180, 130, 60, 0.2);
+}
+body.ending-good .btn-back:hover { background: rgba(180, 130, 60, 0.4); }
+
+body.ending-love {
+  color: #c8dff5;
+  background: #05101a url('../public/bar.png') center / cover no-repeat;
+}
+body.ending-love .ending-scrim { background: rgba(5, 16, 26, 0.68); }
+body.ending-love .btn-back {
+  border-color: rgba(60, 120, 180, 0.5);
+  background: rgba(60, 120, 180, 0.2);
+}
+body.ending-love .btn-back:hover { background: rgba(60, 120, 180, 0.4); }
+
+/* ── 音量面板 ── */
+#volume-panel {
+  position: absolute;
+  top: calc(0.8rem + 36px + 0.5rem);
+  right: 0.8rem;
+  z-index: 35;
+  background: rgba(15, 8, 3, 0.92);
+  border: 1px solid rgba(180, 130, 60, 0.5);
+  border-radius: 8px;
+  padding: 0.6rem 0.6rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+#volume-panel .vol-label {
+  font-size: 0.6rem;
+  color: #c8a870;
+  letter-spacing: 0.05em;
+}
+#volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 28px;
+  height: 90px;
+  background: rgba(180, 130, 60, 0.25);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+#volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  background: url('../public/volume_slide.png') center/contain no-repeat;
+  cursor: pointer;
+}
+#volume-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  background: url('../public/volume_slide.png') center/contain no-repeat;
+  cursor: pointer;
+  border: none;
+}
+
 /* ── RWD：小螢幕調整 ── */
 @media (max-height: 500px) {
-  #dialog-card { width: 36%; }
-  #dialog-content { padding: 12% 8% 6%; font-size: 0.82rem; }
-  #speaker-name { font-size: 0.82rem; }
+  #dialog-card { max-height: 48vh; min-height: 88px; }
+  #dialog-content { padding: 2% 4% 1.5% 10%; }
+  #speaker-name { font-size: 0.75rem; }
   #dialog-text { font-size: 0.78rem; }
+  #character-wrap { bottom: min(48vh, calc(100vw * 416 / 2536)); }
   #hud img { width: 28px; height: 28px; }
 }

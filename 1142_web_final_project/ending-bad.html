@@ -5,29 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>壞結局</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    body { display:flex; flex-direction:column; align-items:center; justify-content:center;
-           background:#0d0505; color:#c8a0a0; text-align:center; gap:2rem; }
-    .ending-title { font-size:2rem; letter-spacing:.2em; }
-    .ending-desc  { font-size:1rem; opacity:.8; max-width:400px; line-height:2; }
-    .ending-img   { max-width:60vw; max-height:50vh; object-fit:contain; }
-    .btn-back { padding:.6rem 2rem; background:rgba(150,60,60,.2);
-                border:1px solid rgba(150,60,60,.5); color:#c8a0a0;
-                font-size:1rem; font-family:inherit; cursor:pointer; border-radius:4px; }
-    .btn-back:hover { background:rgba(150,60,60,.4); }
-  </style>
 </head>
-<body>
-  <!-- <img class="ending-img" src="public/ending_bad.png" alt="壞結局"> -->
-  <div class="ending-title">✦ 壞結局 ✦</div>
-  <p class="ending-desc">
-    被顧北辰發現。<br>
-    許以安被迫抓回去聽他講了整整三個小時的霸總語錄，<br>
-    精神崩潰。
-  </p>
-  <audio autoplay loop id="bgm">
-    <!-- <source src="public/bgm_bad.mp3"> -->
-  </audio>
-  <button class="btn-back" onclick="window.location.href='index.html'">再試一次</button>
+<body class="ending-page ending-bad">
+  <div class="ending-scrim" aria-hidden="true"></div>
+  <div class="ending-content">
+    <!-- TODO: 放 ending_bad.png 至 public/ -->
+    <img class="ending-img" src="public/ending_bad.png" alt="壞結局">
+    <div class="ending-title">✦ 壞結局 ✦</div>
+    <p class="ending-desc">
+      被顧北辰發現。<br>
+      許以安被迫抓回去聽他講了整整三個小時的霸總語錄，<br>
+      精神崩潰。
+    </p>
+    <audio autoplay loop id="bgm">
+      <!-- <source src="public/bgm_bad.mp3"> -->
+    </audio>
+    <audio id="btn-sfx" src="public/button_sound.m4a"></audio>
+    <button class="btn-back" onclick="playBtnSound(); window.location.href='index.html'">再試一次</button>
+  </div>
+  <script>
+    function playBtnSound() {
+      const s = document.getElementById('btn-sfx');
+      s.currentTime = 0;
+      s.play().catch(() => {});
+    }
+  </script>
 </body>
 </html>
