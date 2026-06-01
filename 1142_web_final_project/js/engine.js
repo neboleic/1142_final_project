@@ -279,8 +279,8 @@ function _initVolumeSlider() {
     bgmEl.muted = State.muted;
     if (pctLabel) pctLabel.textContent = slider.value + '%';
     document.getElementById('hud-volume-icon').src = State.muted
-      ? 'public/volume_button_close.png'
-      : 'public/volume_button_open.png';
+      ? 'public/volume_button.png'
+      : 'public/volume_button.png';
   });
 }
 
