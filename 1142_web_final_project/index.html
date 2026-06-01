@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>逃婚密室</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="title-screen">
+
+  <!-- 手機直屏提示 -->
+  <div id="rotate-prompt">
+    <p>請將手機橫置以獲得最佳體驗</p>
+    <div class="rotate-icon">⟳</div>
+  </div>
+
+  <div id="title-wrap">
+    <img id="title-logo" src="public/title.png" alt="遊戲標題">
+
+    <div id="title-buttons">
+      <button class="menu-btn" id="btn-start" onclick="startGame()">
+        <img src="public/button1.png" alt="">
+        <span>開始遊戲</span>
+      </button>
+      <button class="menu-btn" id="btn-continue" onclick="continueGame()">
+        <img src="public/button1.png" alt="">
+        <span>繼續遊戲</span>
+      </button>
+    </div>
+
+    <button id="volume-btn" onclick="toggleVolume()">
+      <img id="volume-icon" src="public/volume_button_open.png" alt="音效">
+    </button>
+  </div>
+
+  <audio id="bgm" loop>
+    <!-- <source src="public/bgm_title.mp3"> -->
+  </audio>
+
+  <script>
+    let muted = false;
+
+    function toggleVolume() {
+      muted = !muted;
+      document.getElementById('bgm').muted = muted;
+      document.getElementById('volume-icon').src = muted
+        ? 'public/volume_button_close.png'
+        : 'public/volume_button_open.png';
+    }
+
+    function startGame() {
+      localStorage.clear();
+      localStorage.setItem('affection', '0');
+      window.location.href = 'game.html';
+    }
+
+    function continueGame() {
+      const saved = localStorage.getItem('saveScene');
+      if (saved) {
+        window.location.href = 'game.html';
+      } else {
+        alert('沒有存檔紀錄');
+      }
+    }
+
+    // 嘗試播放背景音樂（需要使用者互動後才能播）
+    document.addEventListener('click', () => {
+      const bgm = document.getElementById('bgm');
+      if (bgm.paused && bgm.src) bgm.play().catch(() => {});
+    }, { once: true });
+  </script>
+</body>
+</html>
