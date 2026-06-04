@@ -140,19 +140,24 @@ body.game-screen {
   z-index: 1;
 }
 
-/* 角色立繪（對話橫條上方） */
+/* 角色立繪：底部對齊對話框頂端，再往下偏移 3vh 讓名牌不被遮 */
 #character-wrap {
   position: absolute;
   right: 10%;
+  /* 對話框高度公式 = min(42vh, 100vw * 416/2536)；再加 3vh 讓人物稍往下 */
+  bottom: calc(min(42vh, 100vw * 416 / 2536) - 10vh);
   top: 0;
-  bottom: min(42vh, calc(100vw * 416 / 2536));
-  height: auto;
   display: flex;
   align-items: flex-end;
   z-index: 10;
+  pointer-events: none;
 }
 #character-sprite {
+  /* 高度填滿可用空間，寬度隨畫面寬縮放，同時設上限避免過大 */
   max-height: 100%;
+  max-width: min(40vw, 600px);
+  width: auto;
+  height: auto;
   object-fit: contain;
   filter: drop-shadow(4px 0 12px rgba(0,0,0,0.6));
   transition: opacity 0.4s;
