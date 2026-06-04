@@ -78,9 +78,7 @@
       bgm.volume = vol;
       bgm.muted  = vol === 0;
       pctEl.textContent = slider.value + '%';
-      icon.src = vol === 0
-        ? 'public/volume_button_close.png'
-        : 'public/volume_button_open.png';
+      icon.style.opacity = vol === 0 ? '0.35' : '1';
     });
 
     // ── 遊戲跳轉 ────────────────────────────────────

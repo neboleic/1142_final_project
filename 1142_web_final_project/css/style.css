@@ -31,12 +31,10 @@ html, body {
    標題畫面
 ══════════════════════════════ */
 body.title-screen {
-  background-image: url('/public/out.png'); /* 填入你的背景圖片檔名 */
+  background-image: url('/public/out.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  
-  /* 讓整個畫面滿版並讓內容完美居中 */
   margin: 0;
   width: 100vw;
   height: 100vh;
@@ -46,12 +44,11 @@ body.title-screen {
   align-items: center;
 }
 
-/* menu.png 直向框（747×1424），內容疊在紙張區 */
+/* 標題面板 */
 #title-panel {
   position: relative;
-  width: min(52vh, 88vw);
-  aspect-ratio: 747 / 1424;
-  max-height: 92vh;
+  width: min(80vh, 80vw);
+  height: min(90vh, 1000vw);
 }
 .title-panel-bg {
   display: block;
@@ -66,43 +63,45 @@ body.title-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 30% 14% 24%;
+  justify-content: space-between;  /* logo 靠上，按鈕靠下 */
+  padding: 30% 4% 8%;
 }
 
 #title-logo {
-  width: 88%;
-  max-width: 360px;
+  width: 100%;
+  max-width: none;
   filter: drop-shadow(0 4px 16px rgba(235, 219, 136, 0.7));
 }
 
+/* 按鈕並排靠下 */
 #title-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.75rem;
   align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
 #title-buttons .menu-btn img {
-  width: min(180px, 72%);
+  width: min(200px, 65vw);
 }
 
 .menu-btn {
   position: relative;
   background: none; border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  min-width: 180px;
+  width: 72%;
 }
 .menu-btn img {
-  width: 180px;
+  width: 100%;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
   transition: filter 0.2s;
 }
 .menu-btn span {
   position: absolute;
-  font-size: 1.1rem; font-weight: bold;
+  font-size: clamp(0.7rem, 2.2vh, 1.2rem);
+  font-weight: bold;
   color: #3b1f0a; letter-spacing: 0.1em;
   text-shadow: 0 1px 2px rgba(255,220,150,0.4);
   pointer-events: none;
@@ -144,7 +143,7 @@ body.game-screen {
 /* 角色立繪（對話橫條上方） */
 #character-wrap {
   position: absolute;
-  left: 5%;
+  right: 10%;
   top: 0;
   bottom: min(42vh, calc(100vw * 416 / 2536));
   height: auto;
@@ -275,13 +274,20 @@ body.game-screen {
 #menu-overlay {
   position: fixed; inset: 0; z-index: 100;
   background: rgba(0,0,0,0.7);
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: stretch; justify-content: flex-end;
 }
 #menu-panel {
   position: relative;
-  width: min(320px, 80vw);
+  height: 100%;
+  width: auto;
+  aspect-ratio: 747 / 1424;
 }
-#menu-panel > img { width: 100%; }
+#menu-panel > img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: fill;
+}
 #menu-items {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;

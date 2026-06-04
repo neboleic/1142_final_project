@@ -253,7 +253,7 @@ function playBgm(src) {
 }
 
 function playSfx(src) {
-  if (!src || sfxEl.volume === 0 || bgmEl.muted) return;
+  if (!src || State.muted) return;
   sfxEl.currentTime = 0;
   sfxEl.src = src;
   sfxEl.play().catch(() => {});
@@ -277,10 +277,10 @@ function _initVolumeSlider() {
     sfxEl.volume = vol;
     State.muted = vol === 0;
     bgmEl.muted = State.muted;
+    sfxEl.muted = State.muted;
     if (pctLabel) pctLabel.textContent = slider.value + '%';
-    document.getElementById('hud-volume-icon').src = State.muted
-      ? 'public/volume_button.png'
-      : 'public/volume_button.png';
+    const icon = document.getElementById('hud-volume-icon');
+    if (icon) icon.style.opacity = State.muted ? '0.35' : '1';
   });
 }
 
