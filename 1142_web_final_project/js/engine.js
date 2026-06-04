@@ -85,7 +85,20 @@ function init() {
   }, true);
 
   _initVolumeSlider();
+  syncCharacterToDialog();
+  window.addEventListener('resize', syncCharacterToDialog);
   advance();
+}
+
+// ── 角色立繪定位：以對話框實際高度為錨點 ────────────────
+function syncCharacterToDialog() {
+  const dialogCard = document.getElementById('dialog-card');
+  const charWrap   = document.getElementById('character-wrap');
+  if (!dialogCard || !charWrap) return;
+  const dialogH = dialogCard.getBoundingClientRect().height;
+  // 讓人物底部稍微沉入對話框頂端（視覺上腳踩在框邊），可調整 overlap px
+  const overlap = Math.round(dialogH * 0.08);
+  charWrap.style.bottom = (dialogH - overlap) + 'px';
 }
 
 // ── 推進對話 ────────────────────────────────────────

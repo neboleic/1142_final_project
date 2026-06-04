@@ -140,13 +140,11 @@ body.game-screen {
   z-index: 1;
 }
 
-/* 角色立繪：底部對齊對話框頂端，再往下偏移 3vh 讓名牌不被遮 */
+/* 角色立繪：bottom 由 JS syncCharacterToDialog() 動態設定，讀取對話框實際高度 */
 #character-wrap {
   position: absolute;
   right: 10%;
-  padding: 15px;;
-  /* 對話框高度公式 = min(42vh, 100vw * 416/2536)；再加 3vh 讓人物稍往下 */
-  bottom: calc(min(42vh, 100vw * 416 / 2536) - 10vh);
+  bottom: min(42vh, 100vw * 416 / 2536); /* JS 接管前的 fallback */
   top: 0;
   display: flex;
   align-items: flex-end;
@@ -437,6 +435,6 @@ body.ending-love .btn-back:hover { background: rgba(60, 120, 180, 0.4); }
   #dialog-content { padding: 2% 4% 1.5% 10%; }
   #speaker-name { font-size: 0.75rem; }
   #dialog-text { font-size: 0.78rem; }
-  #character-wrap { bottom: min(48vh, calc(100vw * 416 / 2536)); }
+  /* #character-wrap bottom 由 JS 動態設定，不在此覆寫 */
   #hud img { width: 28px; height: 28px; }
 }
