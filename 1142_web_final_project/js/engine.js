@@ -9,6 +9,24 @@ const State = {
   muted: false,
 };
 
+// ── 說話者 → 立繪對照表 ─────────────────────────────
+const SPEAKER_SPRITE = {
+  '許以安':    'public/figure_yian.png',
+  '咖啡店老闆': 'public/figure_boss.png',
+  '顧北辰':    'public/figure_man.png',
+  '店員':      'public/figure_waitress.png',
+};
+
+function updateCharacterSprite(speaker) {
+  const src = SPEAKER_SPRITE[speaker];
+  if (src) {
+    charSprite.src = src;
+    charSprite.style.display = 'block';
+  } else {
+    charSprite.style.display = 'none';
+  }
+}
+
 // DOM 元素
 const sceneBg       = document.getElementById('scene-bg');
 const charSprite    = document.getElementById('character-sprite');
@@ -126,16 +144,19 @@ function showLine(idx) {
       break;
 
     case 'narration':
+      updateCharacterSprite('');   // 旁白無立繪
       setNarration(line.text);
       State.index++;
       break;
 
     case 'thought':
+      updateCharacterSprite(line.speaker);  // 思考者立繪
       setDialogue('', `（${line.text}）`, true);
       State.index++;
       break;
 
     case 'dialogue':
+      updateCharacterSprite(line.speaker);  // 說話者立繪
       setDialogue(line.speaker, line.text, false);
       State.index++;
       break;

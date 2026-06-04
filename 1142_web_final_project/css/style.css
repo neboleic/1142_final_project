@@ -144,6 +144,7 @@ body.game-screen {
 #character-wrap {
   position: absolute;
   right: 10%;
+  padding: 15px;;
   /* 對話框高度公式 = min(42vh, 100vw * 416/2536)；再加 3vh 讓人物稍往下 */
   bottom: calc(min(42vh, 100vw * 416 / 2536) - 10vh);
   top: 0;
