@@ -1,4 +1,4 @@
-/* ── Reset ── */
+﻿/* ?? Reset ?? */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -9,7 +9,13 @@ html, body {
   color: #f5e6c8;
 }
 
-/* ── 橫屏提示（手機直屏時顯示）── */
+#page-root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* ?? 璈怠??內嚗?璈撅?憿舐內嚗?? */
 #rotate-prompt {
   display: none;
   position: fixed; inset: 0; z-index: 9999;
@@ -22,16 +28,16 @@ html, body {
 .rotate-icon { font-size: 3rem; animation: spin 2s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* 僅觸控小螢幕直向時提示橫置，避免桌面窄視窗被整頁遮住 */
+/* ?孛?批??Ｗ??游???蝷箸帖蝵殷??踹?獢蝒?蝒◤?湧??桐? */
 @media (orientation: portrait) and (max-width: 900px) and (hover: none) and (pointer: coarse) {
   #rotate-prompt { display: flex; }
 }
 
-/* ══════════════════════════════
-   標題畫面
-══════════════════════════════ */
-body.title-screen {
-  background-image: url('/public/out.png');
+/* ??????????????????????????????
+   璅??恍
+?????????????????????????????? */
+#page-root.title-screen {
+  background-image: url('/out.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -44,7 +50,7 @@ body.title-screen {
   align-items: center;
 }
 
-/* 標題面板 */
+/* 璅??Ｘ */
 #title-panel {
   position: relative;
   width: min(80vh, 80vw);
@@ -63,7 +69,7 @@ body.title-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;  /* logo 靠上，按鈕靠下 */
+  justify-content: space-between;  /* logo ??嚗???銝?*/
   padding: 30% 4% 8%;
 }
 
@@ -73,7 +79,7 @@ body.title-screen {
   filter: drop-shadow(0 4px 16px rgba(235, 219, 136, 0.7));
 }
 
-/* 按鈕並排靠下 */
+/* ??銝行??? */
 #title-buttons {
   display: flex;
   flex-direction: row;
@@ -115,24 +121,24 @@ body.title-screen {
 }
 #volume-btn img { width: 48px; }
 
-/* 封面音量面板：fixed，浮在音量鍵正上方 */
-body.title-screen #volume-panel {
+/* 撠?喲??Ｘ嚗ixed嚗筑?券?甇????*/
+#page-root.title-screen #volume-panel {
   position: fixed;
   bottom: calc(1.5rem + 48px + 0.5rem);
   right: 1.5rem;
   top: auto;
 }
 
-/* ══════════════════════════════
-   遊戲畫面
-══════════════════════════════ */
-body.game-screen {
+/* ??????????????????????????????
+   ??恍
+?????????????????????????????? */
+#page-root.game-screen {
   display: block;
   position: relative;
   width: 100vw; height: 100vh;
 }
 
-/* 場景背景 */
+/* ?湔? */
 #scene-bg {
   position: absolute; inset: 0;
   background: #1a0e05 center/cover no-repeat;
@@ -140,11 +146,11 @@ body.game-screen {
   z-index: 1;
 }
 
-/* 角色立繪：bottom 由 JS syncCharacterToDialog() 動態設定，讀取對話框實際高度 */
+/* 閫蝡鼓嚗ottom ??JS syncCharacterToDialog() ??閮剖?嚗???閰望?撖阡?擃漲 */
 #character-wrap {
   position: absolute;
   right: 10%;
-  bottom: min(42vh, 100vw * 416 / 2536); /* JS 接管前的 fallback */
+  bottom: min(42vh, 100vw * 416 / 2536); /* JS ?亦恣?? fallback */
   top: 0;
   display: flex;
   align-items: flex-end;
@@ -152,7 +158,7 @@ body.game-screen {
   pointer-events: none;
 }
 #character-sprite {
-  /* 高度填滿可用空間，寬度隨畫面寬縮放，同時設上限避免過大 */
+  /* 擃漲憛急遛?舐蝛粹?嚗祝摨阡?恍撖祉葬?橘???閮凋????憭?*/
   max-height: 100%;
   max-width: min(40vw, 600px);
   width: auto;
@@ -162,7 +168,7 @@ body.game-screen {
   transition: opacity 0.4s;
 }
 
-/* ── 對話橫條（底部，比例對應 dialog.png 2536×416）── */
+/* ?? 撠店璈急?嚗??剁?瘥?撠? dialog.png 2536?416嚗?? */
 #dialog-card {
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -171,7 +177,7 @@ body.game-screen {
   max-height: 42vh;
   min-height: 100px;
   z-index: 20;
-  background: url('../public/dialog.png') center bottom / 100% 100% no-repeat;
+  background: url('/dialog.png') center bottom / 100% 100% no-repeat;
 }
 
 #dialog-content {
@@ -181,7 +187,7 @@ body.game-screen {
   overflow: hidden;
 }
 
-/* 說話者名稱：固定在名牌標籤區域內 */
+/* 隤芾店??蝔梧??箏??典???蝐文?? */
 #speaker-bar {
   position: absolute;
   top: 4%;
@@ -203,12 +209,12 @@ body.game-screen {
   white-space: nowrap;
 }
 
-/* 旁白（不使用） */
+/* ?嚗?雿輻嚗?*/
 #narration-box {
   display: none !important;
 }
 
-/* 對話文字：固定在對話框文字區域左上，隨視窗縮放 */
+/* 撠店??嚗摰撠店獢?摮??椰銝??刻?蝒葬??*/
 #dialog-text {
   position: absolute;
   top: 33%;
@@ -222,7 +228,7 @@ body.game-screen {
   scrollbar-width: thin;
 }
 
-/* 選項：覆蓋同一文字區域 */
+/* ?賊?嚗???銝?????*/
 #choices {
   position: absolute;
   top: 26%;
@@ -247,7 +253,7 @@ body.game-screen {
 }
 .choice-btn:hover { background: rgba(180, 130, 60, 0.35); }
 
-/* 繼續提示：固定在右下角 ▼ 圖案位置 */
+/* 蝜潛??內嚗摰?喃?閫?????雿蔭 */
 #next-hint {
   position: absolute;
   bottom: 4%;
@@ -258,7 +264,7 @@ body.game-screen {
 .blink { animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-/* ── HUD ── */
+/* ?? HUD ?? */
 #hud {
   position: absolute;
   top: 0.8rem;
@@ -274,7 +280,7 @@ body.game-screen {
 #hud button:hover { opacity: 1; }
 #hud img { width: 36px; height: 36px; object-fit: contain; }
 
-/* ── 選單覆蓋層 ── */
+/* ?? ?詨閬?撅??? */
 #menu-overlay {
   position: fixed; inset: 0; z-index: 100;
   background: rgba(0,0,0,0.7);
@@ -298,15 +304,16 @@ body.game-screen {
   align-items: center; justify-content: center; gap: 1rem;
 }
 
-/* ── 結局畫面 ── */
-body.ending-page {
+/* ?? 蝯??恍 ?? */
+#page-root.ending-page {
   display: flex !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   text-align: center;
-  overflow: auto;
 }
 .ending-scrim {
   position: fixed;
@@ -314,74 +321,74 @@ body.ending-page {
   z-index: 0;
   pointer-events: none;
 }
+/* 整體內容：以 vh 為基準，全部跟螢幕高度等比例縮放 */
 .ending-content {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  max-width: 520px;
+  gap: min(2vh, 1.2rem);
+  padding: 3vh 4vw;
+  width: 100%;
+  max-height: 100vh;
 }
+/* 結局圖：高度佔螢幕約 28vh，寬度自動跟比例 */
 .ending-img {
-  max-width: 80vw;
-  max-height: 40vh;
+  height: 28vh;
+  width: auto;
+  max-width: 88vw;
   object-fit: contain;
   border-radius: 4px;
 }
-.ending-title { font-size: 2rem; letter-spacing: 0.2em; }
-.ending-desc {
-  font-size: 1rem;
-  opacity: 0.9;
-  line-height: 2;
-}
-.btn-back {
-  padding: 0.6rem 2rem;
-  font-size: 1rem;
-  font-family: inherit;
-  cursor: pointer;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: inherit;
-}
-.btn-back:hover { background: rgba(255, 255, 255, 0.16); }
 
-body.ending-bad {
+/* 隤芣?獢?description.png ?箄??荔?璅?嚗?摮?冽???*/
+.ending-desc-box {
+  background: url('/description.png') center / 100% 100% no-repeat;
+  aspect-ratio: 1264 / 843;
+  width: min(calc(38vh * 1264 / 843), 88vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  padding: 11% 15% 8%;
+}
+.ending-desc-box .ending-title {
+  font-size: clamp(0.85rem, 2.4vh, 1.5rem);
+  letter-spacing: 0.2em;
+  color: #3b1f0a;
+}
+.ending-desc-box .ending-desc {
+  font-size: clamp(0.7rem, 1.6vh, 0.95rem);
+  line-height: 1.9;
+  color: #2d1a08;
+}
+
+.ending-btn {
+  width: min(calc(9vh * 1264 / 416), 60vw);
+  min-width: 0;
+}
+
+#page-root.ending-bad {
   color: #c8a0a0;
-  background: #0d0505 url('../public/out_night.png') center / cover no-repeat;
+  background: #0d0505 url('/out_night.png') center / cover no-repeat;
 }
-body.ending-bad .ending-scrim { background: rgba(13, 5, 5, 0.72); }
-body.ending-bad .btn-back {
-  border-color: rgba(150, 60, 60, 0.5);
-  background: rgba(150, 60, 60, 0.2);
-}
-body.ending-bad .btn-back:hover { background: rgba(150, 60, 60, 0.4); }
+#page-root.ending-bad .ending-scrim { background: rgba(13, 5, 5, 0.72); }
 
-body.ending-good {
+#page-root.ending-good {
   color: #f5e6c8;
-  background: #1a0e05 url('../public/out.png') center / cover no-repeat;
+  background: #1a0e05 url('/out.png') center / cover no-repeat;
 }
-body.ending-good .ending-scrim { background: rgba(26, 14, 5, 0.65); }
-body.ending-good .btn-back {
-  border-color: rgba(180, 130, 60, 0.5);
-  background: rgba(180, 130, 60, 0.2);
-}
-body.ending-good .btn-back:hover { background: rgba(180, 130, 60, 0.4); }
+#page-root.ending-good .ending-scrim { background: rgba(26, 14, 5, 0.65); }
 
-body.ending-love {
+#page-root.ending-love {
   color: #c8dff5;
-  background: #05101a url('../public/bar.png') center / cover no-repeat;
+  background: #05101a url('/bar.png') center / cover no-repeat;
 }
-body.ending-love .ending-scrim { background: rgba(5, 16, 26, 0.68); }
-body.ending-love .btn-back {
-  border-color: rgba(60, 120, 180, 0.5);
-  background: rgba(60, 120, 180, 0.2);
-}
-body.ending-love .btn-back:hover { background: rgba(60, 120, 180, 0.4); }
+#page-root.ending-love .ending-scrim { background: rgba(5, 16, 26, 0.68); }
 
-/* ── 音量面板 ── */
+/* ?? ?喲??Ｘ ?? */
 #volume-panel {
   position: absolute;
   top: calc(0.8rem + 36px + 0.5rem);
@@ -418,23 +425,23 @@ body.ending-love .btn-back:hover { background: rgba(60, 120, 180, 0.4); }
   appearance: none;
   width: 28px;
   height: 28px;
-  background: url('../public/volume_slide.png') center/contain no-repeat;
+  background: url('/volume_slide.png') center/contain no-repeat;
   cursor: pointer;
 }
 #volume-slider::-moz-range-thumb {
   width: 28px;
   height: 28px;
-  background: url('../public/volume_slide.png') center/contain no-repeat;
+  background: url('/volume_slide.png') center/contain no-repeat;
   cursor: pointer;
   border: none;
 }
 
-/* ── RWD：小螢幕調整 ── */
+/* ?? RWD嚗??Ｗ?隤踵 ?? */
 @media (max-height: 500px) {
   #dialog-card { max-height: 48vh; min-height: 88px; }
   #dialog-content { padding: 2% 4% 1.5% 10%; }
   #speaker-name { font-size: 0.75rem; }
   #dialog-text { font-size: 0.78rem; }
-  /* #character-wrap bottom 由 JS 動態設定，不在此覆寫 */
+  /* #character-wrap bottom ??JS ??閮剖?嚗??冽迨閬神 */
   #hud img { width: 28px; height: 28px; }
 }

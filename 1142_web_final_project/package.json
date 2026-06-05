@@ -2,10 +2,16 @@
   "name": "1142_web_final_project",
   "private": true,
   "scripts": {
-    "start": "serve -p 3000 .",
-    "dev": "serve -p 3000 ."
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "devDependencies": {
     "serve": "^14.2.4"
+  },
+  "dependencies": {
+    "next": "^16.2.7",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   }
 }
