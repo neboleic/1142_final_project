@@ -27,7 +27,7 @@ export default function EndingBad() {
           <span>再試一次</span>
         </button>
       </div>
-      <audio id="btn-sfx" src="/button_sound.m4a" />
+      <audio id="btn-sfx" src="/button_sound.mp3" />
       <Script id="ending-bad-script" strategy="afterInteractive">{`
         function playBtnSound() {
           const s = document.getElementById('btn-sfx');

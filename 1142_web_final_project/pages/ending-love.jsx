@@ -26,7 +26,7 @@ export default function EndingLove() {
           <span>回到標題</span>
         </button>
       </div>
-      <audio id="btn-sfx" src="/button_sound.m4a" />
+      <audio id="btn-sfx" src="/button_sound.mp3" />
       <Script id="ending-love-script" strategy="afterInteractive">{`
         function playBtnSound() {
           const s = document.getElementById('btn-sfx');

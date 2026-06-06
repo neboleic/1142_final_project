@@ -42,7 +42,7 @@ export default function TitleScreen() {
       </div>
 
       <audio id="bgm" src="/backing_sound.mp3" loop />
-      <audio id="btn-sfx" src="/button_sound.m4a" />
+      <audio id="btn-sfx" src="/button_sound.mp3" />
 
       <Script id="title-script" strategy="afterInteractive">{`
         const bgm    = document.getElementById('bgm');

@@ -81,7 +81,7 @@ function init() {
 
   // 所有按鈕點擊音效（capture 優先於 onclick，也涵蓋動態產生的選項按鈕）
   document.addEventListener('click', e => {
-    if (e.target.closest('button')) playSfx('/button_sound.m4a');
+    if (e.target.closest('button')) playSfx('/button_sound.mp3');
   }, true);
 
   _initVolumeSlider();
