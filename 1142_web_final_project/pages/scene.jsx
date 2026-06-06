@@ -9,11 +9,6 @@ export default function ScenePage() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
       </Head>
 
-      <div id="rotate-prompt">
-        <p>請將手機橫置以獲得最佳體驗</p>
-        <div className="rotate-icon">⟳</div>
-      </div>
-
       <div id="scene-bg"></div>
 
       <div id="character-wrap">

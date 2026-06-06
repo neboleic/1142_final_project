@@ -29,7 +29,7 @@ html, body {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ?孛?批??Ｗ??游???蝷箸帖蝵殷??踹?獢蝒?蝒◤?湧??桐? */
-@media (orientation: portrait) and (max-width: 900px) and (hover: none) and (pointer: coarse) {
+@media (orientation: portrait) and (max-width: 900px) {
   #rotate-prompt { display: flex; }
 }
 
