@@ -46,6 +46,19 @@ export default function TitleScreen() {
         const icon   = document.getElementById('volume-icon');
         const panel  = document.getElementById('volume-panel');
 
+        function showToast(msg) {
+          let toast = document.getElementById('game-toast');
+          if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'game-toast';
+            document.body.appendChild(toast);
+          }
+          toast.textContent = msg;
+          toast.classList.add('show');
+          clearTimeout(toast._timer);
+          toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
         function playBtnSound() {
           const s = document.getElementById('btn-sfx');
           s.currentTime = 0;
@@ -79,7 +92,7 @@ export default function TitleScreen() {
           if (saved) {
             window.location.href = '/scene';
           } else {
-            alert('沒有存檔紀錄');
+            showToast('沒 有 存 檔 紀 錄');
           }
         }
 

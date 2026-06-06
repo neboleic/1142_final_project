@@ -445,3 +445,26 @@ html, body {
   /* #character-wrap bottom ??JS ??閮剖?嚗??冽迨閬神 */
   #hud img { width: 28px; height: 28px; }
 }
+
+/* Toast */
+#game-toast {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 8, 3, 0.93);
+  border: 1px solid rgba(200, 160, 48, 0.65);
+  color: #f0d070;
+  font-family: 'Georgia', serif;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
+  letter-spacing: 0.12em;
+  padding: 0.55rem 1.6rem;
+  z-index: 5000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  text-shadow: 0 0 8px rgba(240,200,80,0.4);
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+}
+#game-toast.show { opacity: 1; }

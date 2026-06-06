@@ -336,11 +336,24 @@ function toggleMenu() {
   }
 }
 
+function showToast(msg) {
+  let toast = document.getElementById('game-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'game-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
 function saveGame() {
   localStorage.setItem('saveScene', String(State.index));
   localStorage.setItem('affection', String(State.affection));
   localStorage.setItem('gameResults', JSON.stringify(State.gameResults));
-  alert('存檔成功！');
+  showToast('存 檔 成 功');
 }
 
 function backToTitle() {
