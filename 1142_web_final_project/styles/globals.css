@@ -201,7 +201,7 @@ html, body {
   pointer-events: none;
 }
 #speaker-name {
-  font-size: clamp(0.6rem, 1.3vw, 0.9rem);
+  font-size: clamp(0.6rem, 1.3vw, 2rem);
   font-weight: bold;
   color: #f5e6c8;
   letter-spacing: 0.12em;
@@ -221,7 +221,7 @@ html, body {
   left: 10%;
   right: 5%;
   bottom: 12%;
-  font-size: clamp(0.72rem, 1.55vw, 1rem);
+  font-size: clamp(0.72rem, 1.55vw, 1.3rem);
   line-height: 1.8;
   color: #2d271a;
   overflow-y: auto;
