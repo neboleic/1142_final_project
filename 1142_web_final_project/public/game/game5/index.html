@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>第五關｜逃離顧北辰</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      color: #fff;
+      background: #080808;
+      touch-action: none;
+    }
+    .game {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.72)),
+        url("/out_night.png") center / cover no-repeat;
+    }
+    .arena {
+      position: relative;
+      width: min(1120px, 96vw);
+      height: min(520px, 68vh);
+      min-height: 390px;
+      overflow: hidden;
+      background: linear-gradient(#3e2723 0 76%, #c19a6b 76% 100%);
+      border: 4px solid #120908;
+      box-shadow: 0 24px 70px rgba(0,0,0,.65), inset 0 0 0 2px rgba(255,255,255,.08);
+    }
+    .floor-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 24%;
+      height: 4px;
+      background: #8b5a2b;
+    }
+    .hud {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 900;
+      font-size: 22px;
+      text-shadow: 2px 2px 0 #000;
+    }
+    .hp span { font-size: 28px; margin-right: 3px; }
+    .pause {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 10;
+      padding: 9px 18px;
+      color: #3e2723;
+      background: #fff;
+      border: 2px solid #120908;
+      border-radius: 8px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .sprite {
+      position: absolute;
+      z-index: 5;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      image-rendering: pixelated;
+      pointer-events: none;
+    }
+    .sprite img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom;
+      image-rendering: pixelated;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    #player { width: 80px; height: 112px; }
+    #gu { width: 96px; height: 136px; }
+    .obstacle {
+      position: absolute;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .plant {
+      width: 46px;
+      height: 62px;
+      background:
+        radial-gradient(circle at 35% 12%, #5aa65d 0 16px, transparent 17px),
+        radial-gradient(circle at 66% 18%, #4c914f 0 15px, transparent 16px),
+        linear-gradient(#6d3f24 0 0) center 37px / 28px 24px no-repeat;
+      border-bottom: 5px solid #422415;
+    }
+    .chandelier img { width: 64px; height: 150px; object-fit: contain; }
+    .door {
+      position: absolute;
+      bottom: 24%;
+      width: 130px;
+      height: 190px;
+      z-index: 2;
+      background: linear-gradient(90deg, #23110b, #5a2d19 48%, #1b0c08);
+      border: 5px solid #130806;
+      box-shadow: inset -18px 0 0 rgba(0,0,0,.25), 0 0 0 3px rgba(230,190,120,.18);
+    }
+    .door::after {
+      content: "";
+      position: absolute;
+      right: 20px;
+      top: 88px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #dfc47d;
+      border: 2px solid #130806;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      background: rgba(0,0,0,.72);
+    }
+    .overlay.show { display: grid; }
+    .panel {
+      width: min(560px, 92vw);
+      padding: 28px;
+      color: #16110e;
+      background: #f0e4cd;
+      border: 3px solid #090706;
+      box-shadow: 12px 14px 0 rgba(0,0,0,.34);
+    }
+    .panel h1 { margin: 0 0 14px; font-size: clamp(30px, 5vw, 54px); }
+    .panel p { margin: 0 0 22px; line-height: 1.7; font-size: 18px; }
+    .panel-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    button {
+      padding: 11px 18px;
+      border: 2px solid #080706;
+      border-radius: 8px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      cursor: pointer;
+    }
+    .primary { color: #fff; background: #9c332f; }
+    .secondary { color: #1a1510; background: #dfc47d; }
+    .touch-controls {
+      display: none;
+      width: min(720px, 96vw);
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .touch-controls button {
+      flex: 1;
+      min-height: 74px;
+      color: #fff;
+      background: #24272c;
+      font-size: 20px;
+    }
+    .instructions {
+      margin-top: 18px;
+      color: #d8d2c4;
+      text-align: center;
+      line-height: 1.7;
+      text-shadow: 2px 2px 0 #000;
+    }
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .game { padding: 12px; align-content: start; }
+      .arena { height: 62vh; min-height: 360px; }
+      .touch-controls { display: flex; }
+      .instructions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game">
+    <section class="arena" id="arena">
+      <div class="floor-line"></div>
+      <div class="hud">
+        <span>HP</span>
+        <span class="hp" id="hp"></span>
+      </div>
+      <button class="pause" id="pause-btn">暫停</button>
+      <div class="sprite" id="gu"><img alt="顧北辰"></div>
+      <div class="sprite" id="player"><img alt="許以安"></div>
+      <div class="overlay show" id="overlay">
+        <div class="panel">
+          <h1 id="overlay-title">逃離顧北辰</h1>
+          <p id="overlay-text">按方向鍵上開始。上鍵跳躍跨過盆栽，下鍵蹲下躲避吊燈。</p>
+          <div class="panel-actions" id="overlay-actions">
+            <button class="primary" id="start-btn">開始逃跑</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="touch-controls" id="touch-controls">
+      <button id="duck-btn">蹲下</button>
+      <button id="jump-btn">跳躍</button>
+    </div>
+    <div class="instructions">
+      <div>操作說明：方向鍵上跳躍跨過盆栽，方向鍵下蹲下躲避吊燈。</div>
+      <div>最後階段：連續點擊空白鍵衝刺逃跑。</div>
+    </div>
+  </main>
+
+  <script>
+    const RETURN_TO = '/scene';
+    const arena = document.getElementById('arena');
+    const playerEl = document.getElementById('player');
+    const playerImg = playerEl.querySelector('img');
+    const guEl = document.getElementById('gu');
+    const guImg = guEl.querySelector('img');
+    const hpEl = document.getElementById('hp');
+    const overlay = document.getElementById('overlay');
+    const overlayTitle = document.getElementById('overlay-title');
+    const overlayText = document.getElementById('overlay-text');
+    const overlayActions = document.getElementById('overlay-actions');
+    const pauseBtn = document.getElementById('pause-btn');
+    const jumpBtn = document.getElementById('jump-btn');
+    const duckBtn = document.getElementById('duck-btn');
+    const touchControls = document.getElementById('touch-controls');
+
+    const GOAL_DISTANCE = 800;
+    const GRAVITY = 1.2;
+    const JUMP_STRENGTH = 20;
+    const OBSTACLE_SPEED = 10;
+    const DOOR_X = 800;
+
+    let state = 'start';
+    let hp = 3;
+    let progress = 0;
+    let obstacles = [];
+    let obstacleTimer = 0;
+    let playerX = 150;
+    let playerY = 0;
+    let velocityY = 0;
+    let guX = 32;
+    let isJumping = false;
+    let isDucking = false;
+    let animFrame = 1;
+    let tick = 0;
+    let frameId = null;
+
+    function setState(next) {
+      state = next;
+      renderOverlay();
+      pauseBtn.style.display = state === 'playing' || state === 'paused' ? 'block' : 'none';
+      touchControls.style.display = state === 'playing' || state === 'paused' || state === 'final' || state === 'paused_for_final' ? 'flex' : '';
+    }
+
+    function startGame() {
+      hp = 3;
+      progress = 0;
+      obstacles = [];
+      obstacleTimer = 0;
+      playerX = 150;
+      playerY = 0;
+      velocityY = 0;
+      guX = 32;
+      isJumping = false;
+      isDucking = false;
+      document.querySelectorAll('.obstacle,.door').forEach((el) => el.remove());
+      setState('playing');
+    }
+
+    function startFinalPhase() {
+      guX = -100;
+      createDoor();
+      setState('final');
+    }
+
+    function finish(success) {
+      localStorage.setItem('pendingResult', success ? 'success' : 'fail');
+      window.location.href = RETURN_TO;
+    }
+
+    function renderOverlay() {
+      overlay.classList.toggle('show', state !== 'playing' && state !== 'final');
+      overlayActions.innerHTML = '';
+      if (state === 'start') {
+        overlayTitle.textContent = '逃離顧北辰';
+        overlayText.textContent = '按方向鍵上開始。上鍵跳躍跨過盆栽，下鍵蹲下躲避吊燈。';
+        addOverlayButton('開始逃跑', 'primary', startGame);
+      } else if (state === 'paused') {
+        overlayTitle.textContent = '暫停中';
+        overlayText.textContent = '深呼吸一下，顧北辰還在後面。';
+        addOverlayButton('繼續', 'primary', () => setState('playing'));
+      } else if (state === 'paused_for_final') {
+        overlayTitle.textContent = '顧北辰追上來了！';
+        overlayText.textContent = '終點就在前方。接下來請瘋狂連點空白鍵加速衝刺。';
+        addOverlayButton('開始衝刺', 'primary', startFinalPhase);
+      } else if (state === 'won') {
+        overlayTitle.textContent = '逃脫成功！';
+        overlayText.textContent = '你衝出大門，終於甩開了顧北辰。';
+        addOverlayButton('返回主線', 'primary', () => finish(true));
+      } else if (state === 'gameover') {
+        overlayTitle.textContent = '被抓到了...';
+        overlayText.textContent = '顧北辰堵住了出口。要再試一次，還是進入失敗結局？';
+        addOverlayButton('再試一次', 'secondary', startGame);
+        addOverlayButton('進入結局', 'primary', () => finish(false));
+      }
+    }
+
+    function addOverlayButton(text, className, handler) {
+      const btn = document.createElement('button');
+      btn.className = className;
+      btn.textContent = text;
+      btn.addEventListener('click', handler);
+      overlayActions.appendChild(btn);
+    }
+
+    function updateSprites() {
+      let playerSrc = 'ianrun1.png';
+      if (state === 'gameover') playerSrc = 'iandie.png';
+      else if (state === 'won') playerSrc = 'ianwin.png';
+      else if (isJumping) playerSrc = 'ianjump.png';
+      else if (isDucking) playerSrc = animFrame === 1 ? 'iandown1.png' : 'iandown2.png';
+      else playerSrc = animFrame === 1 ? 'ianrun1.png' : 'ianrun2.png';
+      playerImg.src = playerSrc;
+
+      let guSrc = animFrame === 1 ? 'gurun1.png' : 'gurun2.png';
+      if (state === 'gameover') guSrc = 'guending.png';
+      else if (state === 'start' || state === 'paused') guSrc = 'gustart.png';
+      guImg.src = guSrc;
+    }
+
+    function updateLayout() {
+      hpEl.innerHTML = Array.from({ length: 3 }, (_, i) => `<span>${i < hp ? '♥' : '♡'}</span>`).join('');
+      const floor = arena.clientHeight * 0.24;
+      playerEl.style.left = playerX + 'px';
+      playerEl.style.bottom = (floor + playerY) + 'px';
+      playerEl.style.height = isDucking && playerY === 0 ? '58px' : '112px';
+      guEl.style.left = guX + 'px';
+      guEl.style.bottom = floor + 'px';
+      updateSprites();
+      obstacles.forEach((obs) => {
+        obs.el.style.left = obs.x + 'px';
+        obs.el.style.bottom = obs.type === 'plant' ? floor + 'px' : (floor + 70) + 'px';
+      });
+      const door = document.querySelector('.door');
+      if (door) {
+        door.style.left = DOOR_X + 'px';
+        door.style.bottom = floor + 'px';
+      }
+    }
+
+    function createObstacle() {
+      const type = Math.random() > 0.5 ? 'plant' : 'chandelier';
+      const el = document.createElement('div');
+      el.className = 'obstacle ' + type;
+      if (type === 'chandelier') {
+        el.innerHTML = '<img src="lamp.png" alt="">';
+      }
+      arena.appendChild(el);
+      obstacles.push({ id: Date.now(), type, x: arena.clientWidth + 20, passed: false, el });
+    }
+
+    function createDoor() {
+      if (document.querySelector('.door')) return;
+      const door = document.createElement('div');
+      door.className = 'door';
+      arena.appendChild(door);
+    }
+
+    function jump() {
+      if (state === 'start' || state === 'gameover') {
+        startGame();
+        return;
+      }
+      if (state !== 'playing') return;
+      if (!isJumping && playerY === 0) {
+        isJumping = true;
+        isDucking = false;
+        velocityY = JUMP_STRENGTH;
+      }
+    }
+
+    function duck(on) {
+      if (state !== 'playing') return;
+      if (!isJumping && playerY === 0) isDucking = on;
+    }
+
+    function mash() {
+      if (state === 'paused_for_final') startFinalPhase();
+      else if (state === 'final') playerX += 22;
+    }
+
+    function loop() {
+      frameId = requestAnimationFrame(loop);
+      if (state !== 'playing' && state !== 'final') {
+        updateLayout();
+        return;
+      }
+      tick += 1;
+      if (tick % 8 === 0) animFrame = animFrame === 1 ? 2 : 1;
+
+      if (isJumping) {
+        playerY += velocityY;
+        velocityY -= GRAVITY;
+        if (playerY <= 0) {
+          playerY = 0;
+          isJumping = false;
+          velocityY = 0;
+        }
+      }
+
+      if (state === 'playing') {
+        progress += 1;
+        if (guX > -150) guX -= .5;
+        obstacleTimer += 1;
+        if (obstacleTimer > 50 + Math.random() * 40 && progress < GOAL_DISTANCE) {
+          obstacleTimer = 0;
+          createObstacle();
+        }
+
+        let damage = 0;
+        obstacles.forEach((obs) => {
+          obs.x -= OBSTACLE_SPEED;
+          const width = obs.type === 'plant' ? 46 : 64;
+          const collidingX = obs.x < playerX + 50 && obs.x + width > playerX;
+          if (collidingX && !obs.passed) {
+            const hitPlant = obs.type === 'plant' && playerY < 45;
+            const hitLamp = obs.type === 'chandelier' && (!isDucking || playerY > 0);
+            if (hitPlant || hitLamp) {
+              obs.passed = true;
+              damage += 1;
+            }
+          }
+        });
+        if (damage) {
+          hp -= damage;
+          if (hp <= 0) setState('gameover');
+        }
+        obstacles = obstacles.filter((obs) => {
+          if (obs.x > -120) return true;
+          obs.el.remove();
+          return false;
+        });
+        if (progress >= GOAL_DISTANCE) {
+          obstacles.forEach((obs) => obs.el.remove());
+          obstacles = [];
+          setState('paused_for_final');
+        }
+      } else if (state === 'final') {
+        guX += 2.5;
+        if (guX + 50 >= playerX) setState('gameover');
+        if (playerX + 40 >= DOOR_X) setState('won');
+      }
+      updateLayout();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (['Space', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault();
+      if (e.code === 'ArrowUp') jump();
+      if (e.code === 'ArrowDown') duck(true);
+      if (e.code === 'Space' && !e.repeat) mash();
+    }, { passive: false });
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'ArrowDown') duck(false);
+    });
+    pauseBtn.addEventListener('click', () => setState(state === 'playing' ? 'paused' : 'playing'));
+    jumpBtn.addEventListener('pointerdown', jump);
+    duckBtn.addEventListener('pointerdown', () => duck(true));
+    duckBtn.addEventListener('pointerup', () => duck(false));
+    duckBtn.addEventListener('pointercancel', () => duck(false));
+
+    renderOverlay();
+    updateLayout();
+    loop();
+  </script>
+</body>
+</html>
