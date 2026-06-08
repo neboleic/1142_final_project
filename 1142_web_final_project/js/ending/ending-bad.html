@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>壞結局</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body class="ending-page ending-bad">
   <div class="ending-scrim" aria-hidden="true"></div>
   <div class="ending-content">
     <!-- TODO: 放 ending_bad.png 至 public/ -->
-    <img class="ending-img" src="public/ending_bad.png" alt="壞結局">
+    <img class="ending-img" src="../../public/ending_bad.png" alt="壞結局">
     <div class="ending-title">✦ 壞結局 ✦</div>
     <p class="ending-desc">
       被顧北辰發現。<br>
@@ -18,10 +18,10 @@
       精神崩潰。
     </p>
     <audio autoplay loop id="bgm">
-      <!-- <source src="public/bgm_bad.mp3"> -->
+      <!-- <source src="../../public/bgm_bad.mp3"> -->
     </audio>
-    <audio id="btn-sfx" src="public/button_sound.m4a"></audio>
-    <button class="btn-back" onclick="playBtnSound(); window.location.href='index.html'">再試一次</button>
+    <audio id="btn-sfx" src="../../public/button_sound.mp3"></audio>
+    <button class="btn-back" onclick="playBtnSound(); window.location.href='../../index.html'">再試一次</button>
   </div>
   <script>
     function playBtnSound() {

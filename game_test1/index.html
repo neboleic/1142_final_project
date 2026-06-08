@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>逃婚大作戰 - 後廚電閘</title>
+    <style>
+        @font-face {
+            font-family: 'OpenHuninn';
+            src: url('jf-openhuninn-2.1.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --ink: #101111;
+            --deep: #15161d;
+            --deep-2: #242234;
+            --teal: #486c68;
+            --teal-glow: #9cd8b8;
+            --paper: #d8d2c4;
+            --paper-dim: #b8b0a5;
+            --dust-pink: #b58c94;
+            --wood: #3a2a24;
+            --shadow: rgba(5, 6, 9, .72);
+            --line: rgba(10, 13, 15, .88);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'OpenHuninn', '微軟正黑體', system-ui, sans-serif;
+            user-select: none;
+        }
+
+        body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, rgba(12, 13, 20, .82), rgba(12, 14, 19, .50), rgba(12, 13, 20, .84)),
+        url('kitchen.png') center / cover no-repeat,
+        #15161d;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 52% 42%, rgba(215, 207, 184, .13), transparent 38%),
+        radial-gradient(circle at 16% 88%, rgba(64, 105, 99, .20), transparent 34%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.022) 0 1px, transparent 1px 5px),
+        repeating-linear-gradient(0deg, rgba(0,0,0,.10) 0 2px, transparent 2px 7px);
+    mix-blend-mode: soft-light;
+    opacity: .7;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle, transparent 46%, rgba(0,0,0,.74) 100%);
+}
+
+/* 整體遊戲區：改成更像參考圖的集中式排版 */
+#game-wrapper {
+    width: min(860px, 92vw);
+    height: min(680px, 92vh);
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(18px, 3vh, 26px);
+
+    padding: 42px 54px 38px;
+    border-radius: 28px;
+
+    background:
+        linear-gradient(145deg, rgba(126, 121, 113, .92), rgba(101, 96, 89, .90)),
+        radial-gradient(circle at 50% 40%, rgba(214, 206, 186, .18), transparent 55%);
+
+    box-shadow:
+        0 28px 70px rgba(0,0,0,.70),
+        inset 0 0 0 2px rgba(255,255,255,.06),
+        inset 0 0 80px rgba(20, 19, 22, .45);
+
+    transform: none;
+    isolation: isolate;
+}
+
+/* 移除過多手繪框線，讓畫面更乾淨 */
+#game-wrapper::before,
+#game-wrapper::after {
+    display: none;
+}
+
+/* 共用面板：讓 bar 比較像圖中精緻電箱 */
+/* 金屬面板：保留第一版電箱質感，但配合參考圖調暗 */
+.ink-panel {
+    position: relative;
+    z-index: 2;
+
+    background:
+        linear-gradient(to bottom, #d3d0c2 0%, #aaa69b 100%),
+        repeating-linear-gradient(
+            90deg,
+            rgba(255,255,255,.10) 0 2px,
+            rgba(0,0,0,.045) 2px 5px
+        );
+
+    border: 3px solid #33332f;
+    border-radius: 8px;
+
+    box-shadow:
+        4px 6px 14px rgba(0,0,0,.56),
+        inset 1px 1px 3px rgba(255,255,255,.50),
+        inset -2px -3px 8px rgba(0,0,0,.34);
+}
+
+/* 內框線 */
+.ink-panel::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 2px solid rgba(20, 20, 20, .42);
+    border-radius: 5px;
+    pointer-events: none;
+}
+
+/* 四角螺絲 */
+.ink-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(circle at 15px 15px, #777 0 3px, #222 3px 4px, transparent 5px),
+        radial-gradient(circle at calc(100% - 15px) 15px, #777 0 3px, #222 3px 4px, transparent 5px),
+        radial-gradient(circle at 15px calc(100% - 15px), #777 0 3px, #222 3px 4px, transparent 5px),
+        radial-gradient(circle at calc(100% - 15px) calc(100% - 15px), #777 0 3px, #222 3px 4px, transparent 5px);
+}
+
+/* 上方 DANGER bar：重新修正位置、寬度與字級 */
+/* 第一個框：DANGER 警告框 */
+.danger-banner {
+    width: 86%;
+    min-height: 104px;
+
+    display: grid;
+    grid-template-columns: .82fr 2.2fr .82fr;
+    align-items: center;
+    column-gap: 18px;
+
+    padding: 20px 34px;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    overflow: hidden;
+}
+
+/* 左右 DANGER：縮小、置中、固定在第一個框內 */
+.danger-text {
+    position: relative;
+    z-index: 3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-size: clamp(19px, 2.2vw, 27px);
+    font-weight: 900;
+    color: #161616;
+
+    letter-spacing: 3px;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+
+    transform: none;
+
+    text-shadow:
+        1px 1px 0 rgba(255,255,255,.32),
+        0 0 1px rgba(0,0,0,.5);
+}
+
+/* 閃電也放在第一個框內，不要往外跑 */
+.danger-text::before {
+    content: '⚡';
+    display: block;
+
+    font-size: 14px;
+    line-height: 1;
+    color: #d59b2f;
+
+    margin-bottom: 5px;
+    letter-spacing: 0;
+}
+
+/* 中央警告文字：固定在第一個框中央 */
+.warning-msg {
+    position: relative;
+    z-index: 3;
+
+    color: #1d1d1d;
+    font-weight: 900;
+
+    font-size: clamp(10px, 1vw, 12px);
+    line-height: 1.55;
+    letter-spacing: .4px;
+    text-align: center;
+
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    padding: 0 4px;
+}
+
+/* 燈號 bar：向下移一點，寬度與版面更舒服 */
+/* 第二個框：燈號 bar */
+#light-bar-container {
+    width: 70%;
+    min-height: 104px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 22px;
+    padding: 22px 42px;
+    margin-bottom: 0;
+
+    background:
+        linear-gradient(180deg, rgba(34, 36, 42, .97), rgba(15, 16, 21, .98));
+
+    border-color: #171819;
+
+    box-shadow:
+        4px 6px 14px rgba(0,0,0,.58),
+        inset 0 0 28px rgba(0,0,0,.72),
+        inset 1px 1px 2px rgba(255,255,255,.12);
+}
+
+/* 第三個框：開關 bar */
+
+
+#light-bar-container::before {
+    inset: 7px;
+    border-color: rgba(255,255,255,.12);
+}
+
+.light-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 11px;
+}
+
+.light-wrapper .label {
+    color: #d7d0c4;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: 0 0 8px rgba(156,216,184,.14);
+}
+
+.light-housing {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 5px;
+
+    background:
+        linear-gradient(135deg, #0c0c0f, #5d5d5c 42%, #17171a 72%),
+        radial-gradient(circle at 35% 28%, rgba(255,255,255,.48), transparent 18%);
+
+    border: 2px solid #08090b;
+
+    box-shadow:
+        3px 4px 0 rgba(0,0,0,.55),
+        inset 0 0 8px rgba(255,255,255,.12);
+}
+
+.light {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle at 35% 30%, #55514f, #17161a 66%);
+
+    box-shadow:
+        inset 0 0 12px rgba(0,0,0,.9),
+        0 0 0 rgba(156,216,184,0);
+
+    transition: .28s ease;
+}
+
+.light.on {
+    background:
+        radial-gradient(circle at 36% 30%, #f7ffe8 0 12%, #bce6ae 24%, #4a8e6e 70%);
+
+    box-shadow:
+        0 0 14px rgba(156,216,184,.95),
+        0 0 34px rgba(92, 181, 137, .66),
+        inset 0 0 11px rgba(255,255,255,.90);
+}
+
+/* 開關 bar：位置往下、寬度拉開，和上方元素對齊 */
+#switch-board-container {
+    width: 78%;
+    min-height: 218px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 24px;
+    padding: 38px 52px 32px;
+    margin-bottom: 0;
+}
+
+/* 重新開始按鈕位置 */
+#reset-btn {
+    margin-top: -2px;
+}
+
+.switch-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    min-width: 58px;
+}
+
+.label-top {
+    position: relative;
+    z-index: 2;
+
+    min-width: 38px;
+    padding: 3px 9px;
+
+    border-radius: 999px;
+    color: #252422;
+
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: .6px;
+    text-align: center;
+
+    border: 2px solid rgba(19,19,20,.55);
+    background: rgba(223, 217, 199, .85);
+
+    box-shadow:
+        1px 2px 0 rgba(0,0,0,.22),
+        inset 1px 1px 0 rgba(255,255,255,.35);
+}
+
+.label-bottom {
+    position: relative;
+    z-index: 2;
+
+    font-size: clamp(30px, 3.4vw, 40px);
+    font-weight: 900;
+    color: #121212;
+
+    line-height: 1;
+    letter-spacing: 1px;
+
+    text-shadow:
+        1px 1px 0 rgba(255,255,255,.18),
+        0 0 1px rgba(0,0,0,.4);
+
+    transform: none;
+}
+
+.switch-base {
+    position: relative;
+    z-index: 2;
+
+    width: 52px;
+    height: 72px;
+
+    cursor: pointer;
+
+    border-radius: 11px;
+    border: 4px solid #111114;
+
+    background:
+        linear-gradient(180deg, #202029, #08090d),
+        radial-gradient(circle at 50% 85%, rgba(184,140,148,.24), transparent 35%);
+
+    box-shadow:
+        4px 6px 0 rgba(0,0,0,.46),
+        inset 0 8px 16px rgba(0,0,0,.84),
+        inset 0 0 0 1px rgba(255,255,255,.08);
+
+    transform: none;
+}
+
+.switch-base:hover {
+    filter: brightness(1.08);
+}
+
+.switch-handle {
+    width: 21px;
+    height: 45px;
+
+    position: absolute;
+    left: 12px;
+    bottom: 7px;
+
+    border: 2px solid #0c0c0d;
+    border-radius: 6px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #332f2e 0%,
+            #948d7f 32%,
+            #d6d1bf 48%,
+            #67615a 78%,
+            #1b1b1d 100%
+        );
+
+    box-shadow:
+        2px 7px 10px rgba(0,0,0,.72),
+        inset 2px 0 0 rgba(255,255,255,.22),
+        inset -3px 0 5px rgba(0,0,0,.48);
+
+    transition:
+        bottom .16s cubic-bezier(.22,.9,.32,1.15),
+        transform .16s ease,
+        background .16s ease;
+
+    transform-origin: bottom center;
+}
+
+.switch-handle::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 4px;
+    right: 4px;
+    height: 7px;
+
+    border-radius: 5px;
+    background: rgba(255,255,255,.28);
+}
+
+.switch-base.on .switch-handle {
+    bottom: 21px;
+    transform: rotate(-1deg);
+
+    background:
+        linear-gradient(
+            90deg,
+            #3b3a36 0%,
+            #a69f8d 30%,
+            #eee6cc 48%,
+            #756f64 77%,
+            #252428 100%
+        );
+
+    box-shadow:
+        2px -4px 11px rgba(0,0,0,.66),
+        0 0 18px rgba(156,216,184,.18),
+        inset 2px 0 0 rgba(255,255,255,.28),
+        inset -3px 0 5px rgba(0,0,0,.42);
+}
+
+/* 重新開始按鈕：置中並拉開距離 */
+#reset-btn {
+    position: relative;
+    z-index: 2;
+
+    margin-top: 0;
+    padding: 11px 44px 12px;
+
+    border-radius: 999px;
+    border: 3px solid rgba(12, 13, 14, .86);
+
+    color: #171615;
+    background:
+        linear-gradient(180deg, rgba(226,218,199,.96), rgba(171,160,148,.96));
+
+    font-size: 19px;
+    font-weight: 900;
+    letter-spacing: 3px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 7px 0 rgba(45,42,43,.88),
+        0 15px 24px rgba(0,0,0,.42),
+        inset 2px 2px 0 rgba(255,255,255,.26);
+
+    transition: .1s ease;
+}
+
+#reset-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+#reset-btn:active {
+    transform: translateY(7px);
+
+    box-shadow:
+        0 1px 0 rgba(45,42,43,.88),
+        0 8px 18px rgba(0,0,0,.45),
+        inset 2px 2px 0 rgba(255,255,255,.26);
+}
+
+/* 停電影面 */
+#blackout-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+
+    text-align: center;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .16s ease-in;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(rgba(7,8,10,.84), rgba(3,3,5,.96)),
+        url('storage.png') center / cover no-repeat;
+
+    color: #f1ead8;
+    overflow: hidden;
+}
+
+#blackout-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(circle at 50% 45%, rgba(120, 178, 166, .16), transparent 26%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 1px, transparent 1px 8px);
+
+    opacity: .75;
+}
+
+#blackout-screen.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#blackout-screen h1,
+#blackout-screen p {
+    position: relative;
+    z-index: 1;
+    max-width: 78%;
+}
+
+#blackout-screen h1 {
+    font-size: clamp(32px, 6vw, 58px);
+    color: #f1d7c4;
+    letter-spacing: 3px;
+
+    text-shadow:
+        3px 4px 0 #0a0a0b,
+        0 0 28px rgba(181, 140, 148, .84);
+
+    animation: flicker .55s infinite alternate;
+}
+
+#blackout-screen p {
+    font-size: clamp(17px, 2.4vw, 24px);
+    color: #d8d2c4;
+    line-height: 1.7;
+
+    text-shadow: 2px 2px 0 #09090a;
+}
+
+@keyframes flicker {
+    0% {
+        opacity: .74;
+        transform: translateX(-1px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(1px);
+    }
+}
+
+        @media (max-width: 760px) {
+            body {
+                overflow: auto;
+                padding: 18px 0;
+            }
+
+            #game-wrapper {
+                height: auto;
+                min-height: 92vh;
+                transform: none;
+                width: min(94vw, 560px);
+                gap: 20px;
+                padding: 28px 22px 30px;
+            }
+
+            .danger-banner {
+                grid-template-columns: 1fr;
+                width: 100%;
+                padding: 22px 24px;
+                gap: 12px;
+            }
+
+            .danger-text::before {
+                display: inline;
+                margin-right: 6px;
+            }
+
+            #light-bar-container,
+            #switch-board-container {
+                width: 100%;
+            }
+
+            #light-bar-container {
+                flex-wrap: wrap;
+                gap: 16px 22px;
+                padding: 24px 26px;
+            }
+
+            #switch-board-container {
+                flex-wrap: wrap;
+                gap: 24px 28px;
+                padding: 30px 26px;
+            }
+
+            .switch-column {
+                min-width: 82px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-wrapper">
+        <div class="ink-panel danger-banner">
+            <span class="danger-text">DANGER</span>
+            <div class="warning-msg">
+                安全警告：<br>
+                電閘老舊，嚴禁輔助迴路同時開啟（亮綠燈）<br>
+                若電流全面超載，將導致整棟咖啡館總電源跳脫！
+            </div>
+            <span class="danger-text">DANGER</span>
+        </div>
+
+        <div class="ink-panel" id="light-bar-container">
+            <div class="light-wrapper">
+                <span class="label">1</span>
+                <div class="light-housing"><div class="light" id="light-0"></div></div>
+            </div>
+            <div class="light-wrapper">
+                <span class="label">2</span>
+                <div class="light-housing"><div class="light" id="light-1"></div></div>
+            </div>
+            <div class="light-wrapper">
+                <span class="label">3</span>
+                <div class="light-housing"><div class="light" id="light-2"></div></div>
+            </div>
+            <div class="light-wrapper">
+                <span class="label">4</span>
+                <div class="light-housing"><div class="light" id="light-3"></div></div>
+            </div>
+            <div class="light-wrapper">
+                <span class="label">5</span>
+                <div class="light-housing"><div class="light" id="light-4"></div></div>
+            </div>
+            <div class="light-wrapper">
+                <span class="label">6</span>
+                <div class="light-housing"><div class="light" id="light-5"></div></div>
+            </div>
+        </div>
+
+        <div class="ink-panel" id="switch-board-container">
+            <div class="switch-column">
+                <span class="label-top">ON</span>
+                <div class="switch-base" data-index="0"><div class="switch-handle"></div></div>
+                <span class="label-bottom">A</span>
+            </div>
+
+            <div class="switch-column">
+                <span class="label-top">ON</span>
+                <div class="switch-base" data-index="1"><div class="switch-handle"></div></div>
+                <span class="label-bottom">B</span>
+            </div>
+
+            <div class="switch-column">
+                <span class="label-top">ON</span>
+                <div class="switch-base" data-index="2"><div class="switch-handle"></div></div>
+                <span class="label-bottom">C</span>
+            </div>
+
+            <div class="switch-column">
+                <span class="label-top">ON</span>
+                <div class="switch-base" data-index="3"><div class="switch-handle"></div></div>
+                <span class="label-bottom">D</span>
+            </div>
+
+            <div class="switch-column">
+                <span class="label-top">ON</span>
+                <div class="switch-base" data-index="4"><div class="switch-handle"></div></div>
+                <span class="label-bottom">E</span>
+            </div>
+
+            <div class="switch-column">
+                <span class="label-top">ON</span>
+                <div class="switch-base" data-index="5"><div class="switch-handle"></div></div>
+                <span class="label-bottom">F</span>
+            </div>
+        </div>
+
+        <button id="reset-btn">重新開始</button>
+
+        <div id="blackout-screen">
+            <h1>總電源已跳脫！</h1>
+            <p>趁現在去前台找大門鑰匙。</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let switchStates = [false, false, false, false, false, false];
+            let lightStates = [false, false, false, false, false, false];
+
+            const switchEffects = [
+                [0, 2, 4],
+                [1, 2, 3],
+                [0, 3, 5],
+                [1, 4, 5],
+                [1, 3, 5],
+                [0, 1, 2]
+            ];
+
+            const switches = document.querySelectorAll('.switch-base');
+            const resetBtn = document.getElementById('reset-btn');
+            const blackoutScreen = document.getElementById('blackout-screen');
+
+            let audioCtx;
+
+            function playClickSound() {
+                audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(145, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(38, audioCtx.currentTime + 0.055);
+
+                gain.gain.setValueAtTime(0.28, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.055);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.055);
+            }
+
+            switches.forEach(sw => {
+                sw.addEventListener('click', function() {
+                    playClickSound();
+
+                    const index = Number(this.dataset.index);
+
+                    switchStates[index] = !switchStates[index];
+                    this.classList.toggle('on');
+
+                    switchEffects[index].forEach(lightIndex => {
+                        lightStates[lightIndex] = !lightStates[lightIndex];
+
+                        const light = document.getElementById(`light-${lightIndex}`);
+                        light.classList.toggle('on', lightStates[lightIndex]);
+                    });
+
+                    checkWinCondition();
+                });
+            });
+
+            function checkWinCondition() {
+                const allGreen = lightStates.every(Boolean);
+
+                if (allGreen) {
+                    setTimeout(() => {
+                        blackoutScreen.classList.add('active');
+                    }, 520);
+                }
+            }
+
+            resetBtn.addEventListener('click', () => {
+                playClickSound();
+
+                switchStates.fill(false);
+                lightStates.fill(false);
+
+                switches.forEach(sw => sw.classList.remove('on'));
+
+                for (let i = 0; i < 6; i++) {
+                    document.getElementById(`light-${i}`).classList.remove('on');
+                }
+
+                blackoutScreen.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -57,7 +57,7 @@ const DIALOGUE = [
   { type: 'thought',  speaker: '許以安', text: '不對，這個杯墊的圖案會移動！' },
 
   // 觸發遊戲 1：華容道
-  { type: 'game', gameId: 1, src: 'games/game1/index.html' },
+  { type: 'game', gameId: 1, src: '/game/game1/index.html' },
 
   // ── 場景 2：後廚 ────────────────────────────────────
   { type: 'scene', bg: '/kitchen.png', character: '' },
@@ -81,7 +81,7 @@ const DIALOGUE = [
   { type: 'thought',  speaker: '許以安', text: '不過這個女生是誰啊，她為什麼要幫我⋯⋯而且，我怎麼覺得好像在哪裡見過她？' },
 
   // 觸發遊戲 2：電閘
-  { type: 'game', gameId: 2, src: 'games/game2/index.html' },
+  { type: 'game', gameId: 2, src: '/game/game2/index.html' },
 
   // ── 場景 3：咖啡廳前台 ─────────────────────────────
   { type: 'scene', bg: '/bar.png', character: '' },
@@ -112,7 +112,7 @@ const DIALOGUE = [
   { type: 'dialogue', speaker: '店員',   text: '你能喜歡的話，真是太好了。', condition: 'affection' },
 
   // 觸發遊戲 3：找不同
-  { type: 'game', gameId: 3, src: 'games/game3/index.html' },
+  { type: 'game', gameId: 3, skip: true },
 
   // ── 場景 4：倉庫 ────────────────────────────────────
   { type: 'scene', bg: '/storage.png', character: '' },
@@ -145,7 +145,7 @@ const DIALOGUE = [
   { type: 'thought',  speaker: '許以安', text: '不好，被發現了，快跑啊！' },
 
   // 觸發遊戲 5：跑酷
-  { type: 'game', gameId: 5, src: 'games/game5/index.html' },
+  { type: 'game', gameId: 5, skip: true },
 
   // 結局由 engine.js 根據 gameResult + affection 判斷
   { type: 'ending' },

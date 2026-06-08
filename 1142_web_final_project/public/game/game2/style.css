@@ -1,0 +1,244 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 整體遊戲區：改回第一版變電箱外框，不要只是灰色色塊 */
+#game-wrapper {
+    width: min(900px, 92vw);
+    height: min(650px, 90vh);
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 42px 54px 34px;
+    gap: 24px;
+
+    /* 回到第一版比較有材質的變電箱 / 木箱感 */
+    background:
+        linear-gradient(135deg, #4a4a43 0%, #34342f 38%, #252522 100%),
+        radial-gradient(circle at 50% 35%, rgba(220, 214, 190, .16), transparent 48%);
+
+    border: 28px solid #2f2e29;
+    border-radius: 18px;
+
+    box-shadow:
+        inset 0 0 55px rgba(0,0,0,.82),
+        inset 0 0 18px rgba(0,0,0,.72),
+        0 18px 38px rgba(0,0,0,.72);
+
+    isolation: isolate;
+    overflow: hidden;
+}
+
+/* 加回第一版的暗角與內部老舊質感 */
+#game-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        radial-gradient(circle at 50% 42%, transparent 34%, rgba(0,0,0,.56) 100%),
+        repeating-linear-gradient(
+            115deg,
+            rgba(255,255,255,.035) 0 2px,
+            transparent 2px 11px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(0,0,0,.10) 0 2px,
+            transparent 2px 9px
+        );
+}
+
+/* 加一層不規則手繪感，不要讓外框像純色塊 */
+#game-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 16px;
+    z-index: -1;
+    pointer-events: none;
+
+    border: 2px solid rgba(12, 12, 12, .42);
+    border-radius: 10px;
+
+    background:
+        linear-gradient(92deg, transparent 0 9%, rgba(0,0,0,.34) 9.2% 9.6%, transparent 9.8%),
+        linear-gradient(178deg, transparent 0 22%, rgba(0,0,0,.26) 22.2% 22.7%, transparent 22.9%),
+        radial-gradient(circle at 18% 20%, rgba(145, 178, 160, .12), transparent 26%),
+        radial-gradient(circle at 76% 75%, rgba(181, 140, 148, .13), transparent 32%);
+}
+
+/* 頂部警告條設計 (重現斜線斑馬紋) */
+.danger-banner {
+    background: repeating-linear-gradient(
+        -45deg,
+        #d3d3d3,
+        #d3d3d3 20px,
+        #e6e6e6 20px,
+        #e6e6e6 40px
+    );
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    border-bottom: 4px solid #999;
+}
+
+.danger-text {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.warning-msg {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+/* 主要電閘區域 */
+#power-box {
+    background-image: url('bg1_powerBox.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* 指示燈區塊 */
+#light-bar-container {
+    background-image: url('lightBar_1.jpg');
+    background-size: cover;
+    width: 80%;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.light-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.light-wrapper .label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.light {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+/* 開關區塊 */
+-board-container {
+    background-image: url('PowerFRom_1.jpg');
+    background-size: cover;
+    width: 100%;
+    padding: 30px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+}
+
+.switch-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.switch {
+    width: 80px;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.switch:active {
+    transform: scale(0.95);
+}
+
+.switch-wrapper .label {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* 底部按鈕 */
+.controls {
+    padding: 20px;
+    text-align: center;
+    background-color: #e0e0e0;
+}
+
+#reset-btn {
+    padding: 10px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #ccc;
+    border: 2px solid #888;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    margin-top: -2px;
+}
+
+#reset-btn:hover {
+    background-color: #bbb;
+}
+
+/* 停電特效遮罩 */
+#blackout-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#blackout-screen.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 10;
+}
+
+#blackout-screen h1 {
+    color: #4ade80; /* 螢光綠字體增加戲劇效果 */
+    margin-bottom: 20px;
+}

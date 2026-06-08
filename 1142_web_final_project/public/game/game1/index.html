@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一關｜後廚拼圖</title>
+
+    <style>
+        :root {
+            --bg-dark: #12151b;
+            --panel-dark: rgba(24, 27, 31, 0.82);
+            --panel-mid: rgba(58, 61, 63, 0.72);
+            --paper-light: #d8d1c5;
+            --paper-muted: #9d9a93;
+            --line-dark: #0a0d10;
+            --line-soft: rgba(255, 255, 255, 0.12);
+            --accent-green: #8fae95;
+            --accent-red: #8b2f32;
+            --accent-yellow: #c9b56a;
+            --shadow-heavy: rgba(0, 0, 0, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family:
+                "Noto Sans TC",
+                "PingFang TC",
+                "Microsoft JhengHei",
+                "Helvetica Neue",
+                Arial,
+                sans-serif;
+            background:
+                linear-gradient(
+                    rgba(10, 12, 18, 0.42),
+                    rgba(10, 12, 18, 0.86)
+                ),
+                url("kitchen(2).png") center / cover no-repeat fixed;
+            color: var(--paper-light);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(143, 174, 149, 0.16), transparent 35%),
+                radial-gradient(circle at 85% 70%, rgba(80, 54, 82, 0.22), transparent 35%),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0.025) 0px,
+                    rgba(255, 255, 255, 0.025) 1px,
+                    transparent 1px,
+                    transparent 4px
+                );
+            mix-blend-mode: screen;
+            z-index: 1;
+        }
+
+        .page {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: minmax(320px, 470px) minmax(300px, 440px) minmax(190px, 300px);
+            gap: 26px;
+            align-items: center;
+            width: min(1180px, 94vw);
+            margin: 0 auto;
+            padding: 34px 0;
+        }
+
+        .character-wrap {
+            position: relative;
+            align-self: end;
+            min-height: 640px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            filter: drop-shadow(10px 16px 12px rgba(0, 0, 0, 0.42));
+        }
+
+        .character-wrap::after {
+            content: "";
+            position: absolute;
+            width: 78%;
+            height: 28px;
+            bottom: 5px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.42);
+            filter: blur(8px);
+            z-index: -1;
+        }
+
+        .character {
+            max-height: 690px;
+            max-width: 100%;
+            object-fit: contain;
+            opacity: 0.96;
+        }
+
+        .story-panel {
+            position: relative;
+            padding: 28px 26px 24px;
+            background:
+                linear-gradient(145deg, rgba(44, 47, 50, 0.88), rgba(16, 18, 22, 0.9)),
+                url("storage(2).png") center / cover no-repeat;
+            background-blend-mode: multiply;
+            border: 2px solid var(--line-dark);
+            border-radius: 12px;
+            box-shadow:
+                10px 12px 0 rgba(0, 0, 0, 0.32),
+                inset 0 0 0 1px var(--line-soft);
+            overflow: hidden;
+        }
+
+        .story-panel::before {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            border: 1px solid rgba(216, 209, 197, 0.15);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .chapter-label {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 5px 12px;
+            color: #111;
+            background: var(--paper-muted);
+            border: 2px solid var(--line-dark);
+            transform: rotate(-1deg);
+            font-size: 0.82rem;
+            letter-spacing: 0.18em;
+            font-weight: 800;
+        }
+
+        h1 {
+            margin: 0 0 18px;
+            color: #ece6da;
+            font-size: clamp(2.1rem, 4vw, 3.4rem);
+            letter-spacing: 0.12em;
+            line-height: 1.05;
+            text-shadow:
+                3px 3px 0 #111,
+                0 0 18px rgba(143, 174, 149, 0.18);
+        }
+
+        .story-panel p {
+            margin: 0 0 16px;
+            color: #d7d0c5;
+            font-size: 1rem;
+            line-height: 1.85;
+            letter-spacing: 0.03em;
+        }
+
+        .mission-box {
+            margin-top: 20px;
+            padding: 16px 16px 14px;
+            background: rgba(12, 14, 17, 0.72);
+            border: 2px solid rgba(7, 8, 10, 0.95);
+            border-radius: 10px;
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+                4px 5px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        .mission-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: var(--accent-green);
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .mission-title::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            background: var(--accent-green);
+            border: 2px solid var(--line-dark);
+            transform: rotate(45deg);
+        }
+
+        .mission-box ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #cfc8bd;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .game-panel {
+            position: relative;
+            padding: 22px;
+            background: var(--panel-dark);
+            border: 2px solid var(--line-dark);
+            border-radius: 16px;
+            box-shadow:
+                12px 14px 0 rgba(0, 0, 0, 0.34),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .game-panel::after {
+            content: "";
+            position: absolute;
+            inset: -8px;
+            border: 2px solid rgba(0, 0, 0, 0.55);
+            border-radius: 20px;
+            pointer-events: none;
+            transform: rotate(0.6deg);
+            z-index: -1;
+        }
+
+        .top-bar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .timer-card {
+            padding: 11px 14px 10px;
+            background: rgba(8, 10, 12, 0.76);
+            border: 2px solid var(--line-dark);
+            border-radius: 10px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+        }
+
+        .timer-label {
+            display: block;
+            color: var(--paper-muted);
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            margin-bottom: 2px;
+        }
+
+        #timer {
+            color: #e7e1d6;
+            font-size: 2.45rem;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .status-chip {
+            justify-self: end;
+            padding: 8px 12px;
+            color: #111;
+            background: var(--accent-yellow);
+            border: 2px solid var(--line-dark);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            transform: rotate(1.5deg);
+            white-space: nowrap;
+        }
+
+        #board-container {
+            position: relative;
+            padding: 18px;
+            background:
+                linear-gradient(145deg, rgba(120, 122, 118, 0.45), rgba(43, 46, 50, 0.82));
+            border: 3px solid var(--line-dark);
+            border-radius: 14px;
+            box-shadow:
+                inset 0 0 0 2px rgba(255, 255, 255, 0.08),
+                inset 0 0 28px rgba(0, 0, 0, 0.35);
+        }
+
+        #board {
+            width: 100%;
+            max-width: 360px;
+            aspect-ratio: 1;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px;
+            padding: 5px;
+            background: rgba(6, 7, 8, 0.76);
+            border: 2px solid #050607;
+            border-radius: 10px;
+        }
+
+        .tile {
+            min-width: 0;
+            min-height: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("puzzle_pic.png");
+            background-size: 300% 300%;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            border-radius: 6px;
+            border: 2px solid rgba(10, 12, 14, 0.95);
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+                2px 3px 0 rgba(0, 0, 0, 0.45);
+            transition:
+                transform 0.12s ease,
+                filter 0.12s ease,
+                opacity 0.12s ease;
+        }
+
+        .tile:hover {
+            transform: translateY(-2px) rotate(-0.4deg);
+            filter: brightness(1.08) contrast(1.02);
+        }
+
+        .tile:active {
+            transform: translateY(1px);
+        }
+
+        .empty {
+            background-image: none;
+            background:
+                repeating-linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.04) 0,
+                    rgba(255, 255, 255, 0.04) 6px,
+                    rgba(0, 0, 0, 0.12) 6px,
+                    rgba(0, 0, 0, 0.12) 12px
+                );
+            cursor: default;
+            box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.55);
+            opacity: 0.55;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .hint-text {
+            color: #aaa39a;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            min-width: 96px;
+            padding: 10px 16px;
+            color: #e9e2d6;
+            background:
+                linear-gradient(180deg, #3d4242, #24282a);
+            border: 2px solid #060708;
+            border-radius: 8px;
+            box-shadow:
+                4px 5px 0 rgba(0, 0, 0, 0.38),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            transition:
+                transform 0.12s ease,
+                box-shadow 0.12s ease,
+                filter 0.12s ease;
+        }
+
+        .btn:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow:
+                2px 2px 0 rgba(0, 0, 0, 0.45),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        #overlay {
+            display: none;
+            position: absolute;
+            inset: 18px;
+            z-index: 20;
+            padding: 24px;
+            background:
+                linear-gradient(rgba(17, 20, 23, 0.9), rgba(17, 20, 23, 0.94)),
+                url("storage(2).png") center / cover no-repeat;
+            background-blend-mode: multiply;
+            border: 3px solid var(--line-dark);
+            border-radius: 12px;
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 0 40px rgba(0, 0, 0, 0.55);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #overlay h2 {
+            margin: 0 0 10px;
+            font-size: 2rem;
+            letter-spacing: 0.12em;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        #overlay p {
+            max-width: 290px;
+            margin: 0 0 22px;
+            color: #d8d1c5;
+            line-height: 1.8;
+        }
+
+        .danger {
+            color: var(--accent-red) !important;
+            animation: pulse 0.7s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0.72;
+                transform: scale(1.04);
+            }
+        }
+
+        @media (max-width: 980px) {
+            .page {
+                grid-template-columns: 1fr;
+                width: min(720px, 92vw);
+                padding: 24px 0;
+            }
+
+            .character-wrap {
+                display: none;
+            }
+
+            .story-panel {
+                order: 1;
+            }
+
+            .game-panel {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                background-position: center;
+            }
+
+            .story-panel,
+            .game-panel {
+                padding: 18px;
+            }
+
+            h1 {
+                font-size: 2.1rem;
+            }
+
+            .top-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .status-chip {
+                justify-self: start;
+            }
+
+            #timer {
+                font-size: 2.1rem;
+            }
+
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            #board-container {
+                padding: 12px;
+            }
+
+            #overlay {
+                inset: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+        <section class="story-panel">
+            <span class="chapter-label">STAGE 01</span>
+
+            <p>
+                店員給的杯墊似乎暗藏著什麼訊息......
+            </p>
+
+            <div class="mission-box">
+                <div class="mission-title">任務目標</div>
+                <ul>
+                    <li>在 150 秒內還原拼圖</li>
+                    <li>點擊空格旁的圖塊即可移動</li>
+                    <li>請在顧北辰回來前完成！</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="game-panel">
+            <div class="top-bar">
+                <div class="timer-card">
+                    <span class="timer-label">REMAINING TIME</span>
+                    <div id="timer">150</div>
+                </div>
+
+                <div class="status-chip">PUZZLE LOCKED</div>
+            </div>
+
+            <div id="board-container">
+                <div id="board"></div>
+
+                <div id="overlay">
+                    <h2 id="result-title"></h2>
+                    <p id="result-desc"></p>
+                    <button class="btn" onclick="startGame()">再試一次</button>
+                </div>
+            </div>
+
+            <div class="control-row">
+                <p class="hint-text">
+                    提示：先完成角落與邊框，再處理中央區塊。
+                </p>
+                <button class="btn" onclick="startGame()">重置拼圖</button>
+            </div>
+        </section>
+
+        <section class="character-wrap">
+            <img src="1.png" alt="服務生角色" class="character">
+        </section>
+    </main>
+
+    <script>
+        const boardEl = document.getElementById("board");
+        const timerEl = document.getElementById("timer");
+        const overlayEl = document.getElementById("overlay");
+        const titleEl = document.getElementById("result-title");
+        const descEl = document.getElementById("result-desc");
+
+        const SIZE = 3;
+        const TOTAL_TIME = 150;
+
+        let tiles = [];
+        let emptyIndex = 8;
+        let timeLeft = TOTAL_TIME;
+        let timerInterval = null;
+        let isPlaying = false;
+
+        function startGame() {
+            tiles = Array.from({ length: SIZE * SIZE }, (_, i) => i);
+            emptyIndex = SIZE * SIZE - 1;
+            timeLeft = TOTAL_TIME;
+            isPlaying = true;
+
+            overlayEl.style.display = "none";
+            timerEl.classList.remove("danger");
+            timerEl.innerText = timeLeft;
+
+            for (let i = 0; i < 160; i++) {
+                const neighbors = getNeighbors(emptyIndex);
+                const randomTarget = neighbors[Math.floor(Math.random() * neighbors.length)];
+                swap(emptyIndex, randomTarget);
+            }
+
+            renderBoard();
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function getNeighbors(index) {
+            const neighbors = [];
+            const row = Math.floor(index / SIZE);
+            const col = index % SIZE;
+
+            if (row > 0) neighbors.push(index - SIZE);
+            if (row < SIZE - 1) neighbors.push(index + SIZE);
+            if (col > 0) neighbors.push(index - 1);
+            if (col < SIZE - 1) neighbors.push(index + 1);
+
+            return neighbors;
+        }
+
+        function swap(i, j) {
+            [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+            emptyIndex = tiles.indexOf(SIZE * SIZE - 1);
+        }
+
+        function handleTileClick(index) {
+            if (!isPlaying) return;
+
+            const neighbors = getNeighbors(emptyIndex);
+
+            if (neighbors.includes(index)) {
+                swap(emptyIndex, index);
+                renderBoard();
+                checkWinCondition();
+            }
+        }
+
+        function renderBoard() {
+            boardEl.innerHTML = "";
+
+            tiles.forEach((tileValue, currentIndex) => {
+                const tile = document.createElement("div");
+                tile.classList.add("tile");
+
+                if (tileValue === SIZE * SIZE - 1) {
+                    tile.classList.add("empty");
+                } else {
+                    const targetRow = Math.floor(tileValue / SIZE);
+                    const targetCol = tileValue % SIZE;
+
+                    tile.style.backgroundPosition = `${targetCol * 50}% ${targetRow * 50}%`;
+                }
+
+                tile.addEventListener("click", () => handleTileClick(currentIndex));
+                boardEl.appendChild(tile);
+            });
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            timerEl.innerText = timeLeft;
+
+            if (timeLeft <= 10) {
+                timerEl.classList.add("danger");
+            }
+
+            if (timeLeft <= 0) {
+                endGame(false);
+            }
+        }
+
+        function checkWinCondition() {
+            const isWin = tiles.every((value, index) => value === index);
+
+            if (isWin) {
+                endGame(true);
+            }
+        }
+
+        function endGame(isWin) {
+            isPlaying = false;
+            clearInterval(timerInterval);
+
+            overlayEl.style.display = "flex";
+
+            if (isWin) {
+                titleEl.innerText = "通關成功";
+                titleEl.style.color = "#8fae95";
+                descEl.innerText = "杯墊圖樣重新拼合，加密訊息成功解開：請前往後廚。";
+            } else {
+                titleEl.innerText = "通關失敗";
+                titleEl.style.color = "#b85d61";
+                descEl.innerText = "後廚的警報聲響起，你的行動被發現了！";
+            }
+
+            setTimeout(() => {
+                localStorage.setItem("pendingResult", isWin ? "success" : "fail");
+                window.location.href = "/scene";
+            }, 1200);
+        }
+
+        startGame();
+    </script>
+</body>
+</html>

@@ -11,10 +11,11 @@ const State = {
 
 // ── 說話者 → 立繪對照表 ─────────────────────────────
 const SPEAKER_SPRITE = {
-  '許以安':    '/figure_yian.png',
-  '咖啡店老闆': '/figure_boss.png',
-  '顧北辰':    '/figure_man.png',
-  '店員':      '/figure_waitress.png',
+  '許以安':    'public/figure_yian.png',
+  '咖啡店老闆': 'public/figure_boss.png',
+  '店長':      'public/figure_boss.png',
+  '顧北辰':    'public/figure_man.png',
+  '店員':      'public/figure_waitress.png',
 };
 
 function updateCharacterSprite(speaker) {
@@ -81,7 +82,7 @@ function init() {
 
   // 所有按鈕點擊音效（capture 優先於 onclick，也涵蓋動態產生的選項按鈕）
   document.addEventListener('click', e => {
-    if (e.target.closest('button')) playSfx('/button_sound.mp3');
+    if (e.target.closest('button')) playSfx('public/button_sound.mp3');
   }, true);
 
   _initVolumeSlider();
@@ -246,8 +247,8 @@ function showChoices(choices) {
 
 // ── 小遊戲跳轉 ──────────────────────────────────────
 function triggerGame(gameId, src) {
-  // 路徑不是絕對路徑（/ 開頭）代表遊戲尚未實作，自動標成 success 繼續劇情
-  if (!src || !src.startsWith('/')) {
+  // 劇本裡已有位置但遊戲尚未放入專案時，保留順序並自動通關。
+  if (!src) {
     State.gameResults[String(gameId)] = 'success';
     State.index++;
     showLine(State.index);
@@ -274,7 +275,11 @@ function resolveEnding() {
 }
 
 function goEnding(type) {
-  const map = { good: '/ending-good', bad: '/ending-bad', love: '/ending-love' };
+  const map = {
+    good: 'js/ending/ending-good.html',
+    bad: 'js/ending/ending-bad.html',
+    love: 'js/ending/ending-love.html'
+  };
   window.location.href = map[type];
 }
 
@@ -285,7 +290,7 @@ function playBgm(src) {
     localStorage.removeItem('bgmSrc');
     return;
   }
-  localStorage.setItem('bgmSrc', src);  // 儲存供小遊戲返回後還原
+  localStorage.setItem('bgmSrc', new URL(src, window.location.href).href);  // 儲存供小遊戲返回後還原
   bgmEl.src = src;
   bgmEl.play().catch(() => {
     // autoplay 被擋：等使用者首次互動再播
@@ -357,7 +362,7 @@ function saveGame() {
 }
 
 function backToTitle() {
-  window.location.href = '/';
+  window.location.href = 'index.html';
 }
 
 // 啟動

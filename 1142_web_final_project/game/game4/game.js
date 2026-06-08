@@ -254,7 +254,7 @@ document.getElementById('key-container').addEventListener('click', () => {
     // 動畫播完後跳回主線
     setTimeout(() => {
       localStorage.setItem('pendingResult', 'success');
-      window.location.href = '/scene';
+      window.location.href = '../../scene.html';
     }, 900);
   }
 });
@@ -262,7 +262,7 @@ document.getElementById('key-container').addEventListener('click', () => {
 document.getElementById('btn-giveup').addEventListener('click', () => {
   showConfirm(() => {
     localStorage.setItem('pendingResult', 'fail');
-    window.location.href = '/scene';
+    window.location.href = '../../scene.html';
   });
 });
 
