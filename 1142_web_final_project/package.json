@@ -2,16 +2,11 @@
   "name": "1142_web_final_project",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "npx serve .",
+    "build": "node scripts/build-static.mjs",
+    "start": "npx serve dist"
   },
   "devDependencies": {
     "serve": "^14.2.4"
-  },
-  "dependencies": {
-    "next": "^16.2.7",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
   }
 }
