@@ -68,11 +68,13 @@ function init() {
     if (pendingResult === 'fail' && ['1','3'].includes(pendingGame)) {
       localStorage.removeItem('pendingGame');
       localStorage.removeItem('pendingResult');
+      localStorage.removeItem('gameReturnTo');
       goEnding('bad');
       return;
     }
     localStorage.removeItem('pendingGame');
     localStorage.removeItem('pendingResult');
+    localStorage.removeItem('gameReturnTo');
   }
 
   document.addEventListener('click', advance);
@@ -259,6 +261,7 @@ function triggerGame(gameId, src) {
   localStorage.setItem('pendingGame', String(gameId));
   localStorage.setItem('gameResults', JSON.stringify(State.gameResults));
   localStorage.setItem('affection', String(State.affection));
+  localStorage.setItem('gameReturnTo', window.location.href);
   window.location.href = src;
 }
 

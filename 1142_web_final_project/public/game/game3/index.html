@@ -277,7 +277,7 @@
     const TOTAL_SECONDS = 30;
     const TOTAL_DIFFERENCES = 4;
     const CORRECT_SIDE = 'left';
-    const RETURN_TO = '/scene';
+    const RETURN_TO = localStorage.getItem('gameReturnTo') || '/scene';
 
     const filters = {
       painting: 'sepia(0.4) saturate(0.75) brightness(0.7) contrast(0.95)',

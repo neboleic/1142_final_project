@@ -1,0 +1,8 @@
+{
+  "name": "1142-final-project-deploy",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix 1142_web_final_project run build",
+    "dev": "npm --prefix 1142_web_final_project run dev"
+  }
+}
