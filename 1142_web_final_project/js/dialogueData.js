@@ -86,7 +86,7 @@ const DIALOGUE = [
   { type: 'thought',  speaker: '許以安', text: '到後廚一趟⋯⋯？這是在跟我說的嗎？可是現在那個顧什麼的坐在我對面⋯⋯我該怎麼去後廚啊⋯⋯' },
 
   { type: 'dialogue', speaker: '顧北辰', text: '（大喊）可惡⋯⋯是誰在攻擊我的肚子，可惡的咖啡，我記住你了！' },
-  { type: 'narration', text: '（顧衝去廁所）' },
+  { type: 'narration', text: '（衝去廁所）' },
   { type: 'thought',  speaker: '許以安', text: '好機會，快走！' },
 
   { type: 'dialogue', speaker: '許以安', text: '究竟是誰約我來這裡的？' },

@@ -15,7 +15,7 @@ export default function EndingBad() {
           <div className="ending-title">✦ 壞結局 ✦</div>
           <p className="ending-desc">
             被顧北辰發現。<br />
-            許以安被迫抓回去聽他講了整整三個小時的霸總語錄，<br />
+            你被迫抓回去聽他講了整整三個小時的霸總語錄，<br />
             精神崩潰。
           </p>
         </div>

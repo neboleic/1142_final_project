@@ -15,7 +15,7 @@ export default function EndingLove() {
           <div className="ending-title">✦ 真愛結局 ✦</div>
           <p className="ending-desc">
             店員揭曉身分——五年前的高中同學。<br />
-            許以安帶著項鍊，與她一起消失在夜色中。
+            你帶著項鍊，與她一起消失在夜色中。
           </p>
         </div>
         <button

@@ -14,7 +14,7 @@ export default function EndingGood() {
         <div className="ending-desc-box">
           <div className="ending-title">✦ 好結局 ✦</div>
           <p className="ending-desc">
-            許以安成功拿到大門鑰匙，<br />
+            你成功拿到大門鑰匙，<br />
             騎著偉士牌機車逃出生天，重獲自由！
           </p>
         </div>
