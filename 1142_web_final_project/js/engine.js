@@ -100,7 +100,7 @@ function syncCharacterToDialog() {
   if (!dialogCard || !charWrap) return;
   const dialogH = dialogCard.getBoundingClientRect().height;
   // 讓人物底部稍微沉入對話框頂端（視覺上腳踩在框邊），可調整 overlap px
-  const overlap = Math.round(dialogH * 0.08);
+  const overlap = Math.round(dialogH * 0.3);
   charWrap.style.bottom = (dialogH - overlap) + 'px';
 }
 
