@@ -21,7 +21,7 @@
       overflow: hidden;
       font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
       color: var(--ink);
-      background: #17120f url("bg.png") center / cover no-repeat;
+      background: #17120f url("/game/game3/bg.png") center / cover no-repeat;
     }
 
     body::before {
@@ -289,8 +289,8 @@
     const differences = [
       {
         id: 'painting',
-        left: { src: 'painting-cropped.png', left: '7%', top: '21%', width: '12%', filter: filters.painting },
-        right: { src: 'white-painting-cropped.png', left: '7%', top: '21%', width: '12%', filter: filters.painting },
+        left: { src: '/game/game3/painting-cropped.png', left: '7%', top: '21%', width: '12%', filter: filters.painting },
+        right: { src: '/game/game3/white-painting-cropped.png', left: '7%', top: '21%', width: '12%', filter: filters.painting },
         hotspots: {
           left: { cx: '13%', cy: '26%', r: '7%' },
           right: { cx: '13%', cy: '26%', r: '7%' },
@@ -298,8 +298,8 @@
       },
       {
         id: 'teacup',
-        left: { src: 'teacup.png', left: '27%', top: '43%', width: '22%', blend: 'screen', filter: filters.cup },
-        right: { src: 'white-cup.png', left: '27%', top: '43%', width: '22%', blend: 'screen', filter: filters.cup },
+        left: { src: '/game/game3/teacup.png', left: '27%', top: '43%', width: '22%', blend: 'screen', filter: filters.cup },
+        right: { src: '/game/game3/white-cup.png', left: '27%', top: '43%', width: '22%', blend: 'screen', filter: filters.cup },
         hotspots: {
           left: { cx: '38%', cy: '52%', r: '8%' },
           right: { cx: '38%', cy: '52%', r: '8%' },
@@ -307,8 +307,8 @@
       },
       {
         id: 'star',
-        left: { src: 'star.png', left: '2%', top: '72%', width: '14%', blend: 'screen', filter: filters.star },
-        right: { src: 'star.png', left: '84%', top: '72%', width: '14%', blend: 'screen', filter: filters.star },
+        left: { src: '/game/game3/star.png', left: '2%', top: '72%', width: '14%', blend: 'screen', filter: filters.star },
+        right: { src: '/game/game3/star.png', left: '84%', top: '72%', width: '14%', blend: 'screen', filter: filters.star },
         hotspots: {
           left: { cx: '9%', cy: '79%', r: '7%' },
           right: { cx: '91%', cy: '79%', r: '7%' },
@@ -316,8 +316,8 @@
       },
       {
         id: 'lamp',
-        left: { src: 'lamp-clear.png', left: '60%', top: '0%', width: '18%', filter: filters.lamp },
-        right: { src: 'desk-lamp-clear.png', left: '43%', top: '70%', width: '14%', filter: filters.lamp },
+        left: { src: '/game/game3/lamp-clear.png', left: '60%', top: '0%', width: '18%', filter: filters.lamp },
+        right: { src: '/game/game3/desk-lamp-clear.png', left: '43%', top: '70%', width: '14%', filter: filters.lamp },
         hotspots: {
           left: { cx: '69%', cy: '13%', r: '10%' },
           right: { cx: '50%', cy: '79%', r: '8%' },
@@ -395,7 +395,7 @@
 
         const base = document.createElement('img');
         base.className = 'base';
-        base.src = 'cafe.png';
+        base.src = '/game/game3/cafe.png';
         base.alt = side === 'left' ? '左邊照片' : '右邊照片';
         photo.appendChild(base);
 
