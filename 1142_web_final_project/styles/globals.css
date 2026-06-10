@@ -221,7 +221,7 @@ html, body {
   left: 10%;
   right: 5%;
   bottom: 12%;
-  font-size: clamp(0.72rem, 1.55vw, 1.3rem);
+  font-size: clamp(0.9rem, 1.8vw, 1.5rem);
   line-height: 1.8;
   color: #2d271a;
   overflow-y: auto;
@@ -441,7 +441,7 @@ html, body {
   #dialog-card { max-height: 48vh; min-height: 88px; }
   #dialog-content { padding: 2% 4% 1.5% 10%; }
   #speaker-name { font-size: 0.75rem; }
-  #dialog-text { font-size: 0.78rem; }
+  #dialog-text { font-size: 1rem; }
   /* #character-wrap bottom ??JS ??閮剖?嚗??冽迨閬神 */
   #hud img { width: 28px; height: 28px; }
 }
