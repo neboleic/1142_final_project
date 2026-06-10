@@ -236,8 +236,9 @@
     const GOAL_DISTANCE = 800;
     const GRAVITY = 1.2;
     const JUMP_STRENGTH = 20;
-    const OBSTACLE_SPEED = 10;
+    const OBSTACLE_SPEED = 6;
     const DOOR_X = 800;
+    const INTERVAL = 1000 / 60; // 60 FPS
 
     let state = 'start';
     let hp = 3;
@@ -253,6 +254,7 @@
     let animFrame = 1;
     let tick = 0;
     let frameId = null;
+    let lastTime = 0;
 
     function setState(next) {
       state = next;

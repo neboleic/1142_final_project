@@ -22,7 +22,7 @@
       padding: 24px;
       background:
         linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.72)),
-        url("../../public/out_night.png") center / cover no-repeat;
+        url("/out_night.png") center / cover no-repeat;
     }
     .arena {
       position: relative;
@@ -36,29 +36,25 @@
     }
     .floor-line {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 24%;
+      left: 0; right: 0; bottom: 24%;
       height: 4px;
       background: #8b5a2b;
     }
     .hud {
       position: absolute;
-      top: 18px;
-      left: 18px;
+      top: 18px; left: 18px;
       z-index: 10;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 6px;
       font-weight: 900;
       font-size: 22px;
       text-shadow: 2px 2px 0 #000;
     }
-    .hp span { font-size: 28px; margin-right: 3px; }
+    .hp { display: flex; align-items: center; gap: 4px; }
     .pause {
       position: absolute;
-      top: 18px;
-      right: 18px;
+      top: 18px; right: 18px;
       z-index: 10;
       padding: 9px 18px;
       color: #3e2723;
@@ -71,58 +67,62 @@
     .sprite {
       position: absolute;
       z-index: 5;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      image-rendering: pixelated;
       pointer-events: none;
+      transform-origin: bottom center;
+    }
+    /* 固定玩家容器大小，任何狀態都不改變 */
+    #player {
+      width: 80px;
+      height: 104px;
+    }
+    /* 固定顧北辰容器大小 */
+    #gu {
+      width: 96px;
+      height: 128px;
     }
     .sprite img {
+      position: absolute;
+      bottom: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      object-position: bottom;
+      object-position: bottom center;
       image-rendering: pixelated;
       user-select: none;
       -webkit-user-drag: none;
     }
-    #player { width: 80px; height: 112px; }
-    #gu { width: 96px; height: 136px; }
     .obstacle {
       position: absolute;
       z-index: 4;
       pointer-events: none;
     }
-    .plant {
-      width: 46px;
-      height: 62px;
-      background:
-        radial-gradient(circle at 35% 12%, #5aa65d 0 16px, transparent 17px),
-        radial-gradient(circle at 66% 18%, #4c914f 0 15px, transparent 16px),
-        linear-gradient(#6d3f24 0 0) center 37px / 28px 24px no-repeat;
-      border-bottom: 5px solid #422415;
+    .plant { width: 56px; height: 80px; }
+    .plant img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom;
+      image-rendering: pixelated;
     }
-    .chandelier img { width: 64px; height: 150px; object-fit: contain; }
+    .chandelier { width: 64px; height: 150px; }
+    .chandelier img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
     .door {
       position: absolute;
-      bottom: 24%;
-      width: 130px;
-      height: 190px;
       z-index: 2;
-      background: linear-gradient(90deg, #23110b, #5a2d19 48%, #1b0c08);
-      border: 5px solid #130806;
-      box-shadow: inset -18px 0 0 rgba(0,0,0,.25), 0 0 0 3px rgba(230,190,120,.18);
+      width: 160px;
     }
-    .door::after {
-      content: "";
-      position: absolute;
-      right: 20px;
-      top: 88px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #dfc47d;
-      border: 2px solid #130806;
+    .door img {
+      width: 100%;
+      display: block;
+      object-fit: contain;
+      object-position: bottom;
+      image-rendering: pixelated;
     }
     .overlay {
       position: absolute;
@@ -200,15 +200,13 @@
         <div class="panel">
           <h1 id="overlay-title">逃離顧北辰</h1>
           <p id="overlay-text">按方向鍵上開始。上鍵跳躍跨過盆栽，下鍵蹲下躲避吊燈。</p>
-          <div class="panel-actions" id="overlay-actions">
-            <button class="primary" id="start-btn">開始逃跑</button>
-          </div>
+          <div class="panel-actions" id="overlay-actions"></div>
         </div>
       </div>
     </section>
     <div class="touch-controls" id="touch-controls">
-      <button id="duck-btn">蹲下</button>
-      <button id="jump-btn">跳躍</button>
+      <button id="duck-btn">⏬ 蹲下</button>
+      <button id="jump-btn">⏫ 跳躍</button>
     </div>
     <div class="instructions">
       <div>操作說明：方向鍵上跳躍跨過盆栽，方向鍵下蹲下躲避吊燈。</div>
@@ -217,7 +215,7 @@
   </main>
 
   <script>
-    const RETURN_TO = '../../scene.html';
+    const RETURN_TO = localStorage.getItem('gameReturnTo') || '../../scene.html';
     const arena = document.getElementById('arena');
     const playerEl = document.getElementById('player');
     const playerImg = playerEl.querySelector('img');
@@ -238,6 +236,9 @@
     const JUMP_STRENGTH = 20;
     const OBSTACLE_SPEED = 10;
     const DOOR_X = 800;
+    const MASH_BOOST = 22;
+    const GU_RETREAT_SPEED = 0.5;
+    const GU_CHASE_SPEED = 2.5;
 
     let state = 'start';
     let hp = 3;
@@ -253,12 +254,15 @@
     let animFrame = 1;
     let tick = 0;
     let frameId = null;
+    let lastTime = 0;
+    const INTERVAL = 1000 / 60;
 
     function setState(next) {
       state = next;
       renderOverlay();
-      pauseBtn.style.display = state === 'playing' || state === 'paused' ? 'block' : 'none';
-      touchControls.style.display = state === 'playing' || state === 'paused' || state === 'final' || state === 'paused_for_final' ? 'flex' : '';
+      pauseBtn.style.display = (state === 'playing' || state === 'paused') ? 'block' : 'none';
+      const showTouch = ['playing', 'paused', 'final', 'paused_for_final'].includes(state);
+      touchControls.style.display = showTouch ? 'flex' : 'none';
     }
 
     function startGame() {
@@ -272,7 +276,7 @@
       guX = 32;
       isJumping = false;
       isDucking = false;
-      document.querySelectorAll('.obstacle,.door').forEach((el) => el.remove());
+      document.querySelectorAll('.obstacle, .door').forEach((el) => el.remove());
       setState('playing');
     }
 
@@ -293,63 +297,95 @@
       if (state === 'start') {
         overlayTitle.textContent = '逃離顧北辰';
         overlayText.textContent = '按方向鍵上開始。上鍵跳躍跨過盆栽，下鍵蹲下躲避吊燈。';
-        addOverlayButton('開始逃跑', 'primary', startGame);
+        addBtn('開始逃跑', 'primary', startGame);
       } else if (state === 'paused') {
         overlayTitle.textContent = '暫停中';
         overlayText.textContent = '深呼吸一下，顧北辰還在後面。';
-        addOverlayButton('繼續', 'primary', () => setState('playing'));
+        addBtn('繼續', 'primary', () => setState('playing'));
       } else if (state === 'paused_for_final') {
-        overlayTitle.textContent = '顧北辰追上來了！';
-        overlayText.textContent = '終點就在前方。接下來請瘋狂連點空白鍵加速衝刺。';
-        addOverlayButton('開始衝刺', 'primary', startFinalPhase);
+        overlayTitle.textContent = '⚠️ 顧北辰追上來了！';
+        overlayText.innerHTML = '終點就在前方！請<strong>瘋狂連點空白鍵</strong>加速衝刺！<br>長按是沒有用的！';
+        addBtn('開始衝刺！（也可直接按空白鍵）', 'primary', startFinalPhase);
       } else if (state === 'won') {
         overlayTitle.textContent = '逃脫成功！';
         overlayText.textContent = '你衝出大門，終於甩開了顧北辰。';
-        addOverlayButton('返回主線', 'primary', () => finish(true));
+        addBtn('返回主線', 'primary', () => finish(true));
       } else if (state === 'gameover') {
         overlayTitle.textContent = '被抓到了...';
         overlayText.textContent = '顧北辰堵住了出口。要再試一次，還是進入失敗結局？';
-        addOverlayButton('再試一次', 'secondary', startGame);
-        addOverlayButton('進入結局', 'primary', () => finish(false));
+        addBtn('再試一次', 'secondary', startGame);
+        addBtn('進入結局', 'primary', () => finish(false));
       }
     }
 
-    function addOverlayButton(text, className, handler) {
+    function addBtn(text, cls, handler) {
       const btn = document.createElement('button');
-      btn.className = className;
+      btn.className = cls;
       btn.textContent = text;
       btn.addEventListener('click', handler);
       overlayActions.appendChild(btn);
     }
 
     function updateSprites() {
-      let playerSrc = 'ianrun1.png';
-      if (state === 'gameover') playerSrc = 'iandie.png';
-      else if (state === 'won') playerSrc = 'ianwin.png';
-      else if (isJumping) playerSrc = 'ianjump.png';
-      else if (isDucking) playerSrc = animFrame === 1 ? 'iandown1.png' : 'iandown2.png';
-      else playerSrc = animFrame === 1 ? 'ianrun1.png' : 'ianrun2.png';
-      playerImg.src = playerSrc;
+      // 玩家圖片切換
+      let playerSrc = '/game/game5/ianrun1.png';
+      if (state === 'gameover') playerSrc = '/game/game5/iandie.png';
+      else if (state === 'won') playerSrc = '/game/game5/ianwin.png';
+      else if (isJumping) playerSrc = '/game/game5/ianjump.png';
+      else if (isDucking) playerSrc = animFrame === 1 ? '/game/game5/iandown1.png' : '/game/game5/iandown2.png';
+      else playerSrc = animFrame === 1 ? '/game/game5/ianrun1.png' : '/game/game5/ianrun2.png';
+      if (playerImg.src !== playerSrc) playerImg.src = playerSrc;
 
-      let guSrc = animFrame === 1 ? 'gurun1.png' : 'gurun2.png';
-      if (state === 'gameover') guSrc = 'guending.png';
-      else if (state === 'start' || state === 'paused') guSrc = 'gustart.png';
-      guImg.src = guSrc;
+      // 顧北辰圖片切換
+      let guSrc = animFrame === 1 ? '/game/game5/gurun1.png' : '/game/game5/gurun2.png';
+      if (state === 'gameover') guSrc = '/game/game5/guending.png';
+      else if (state === 'start' || state === 'paused') guSrc = '/game/game5/gustart.png';
+      if (guImg.src !== guSrc) guImg.src = guSrc;
     }
 
     function updateLayout() {
-      hpEl.innerHTML = Array.from({ length: 3 }, (_, i) => `<span>${i < hp ? '♥' : '♡'}</span>`).join('');
+      // 愛心
+      hpEl.innerHTML = Array.from({ length: 3 }, (_, i) =>
+        `<img src="${i < hp ? '/game/game5/redheart.png' : '/game/game5/blackheart.png'}"
+          style="width:28px;height:28px;object-fit:contain;">`
+      ).join('');
+
       const floor = arena.clientHeight * 0.24;
+
+     // 玩家
       playerEl.style.left = playerX + 'px';
-      playerEl.style.bottom = (floor + playerY) + 'px';
-      playerEl.style.height = isDucking && playerY === 0 ? '58px' : '112px';
+      playerEl.style.transform = '';
+
+      if (isDucking && playerY === 0) {
+        playerEl.style.width = '80px';
+        playerEl.style.height = '72px';
+        playerEl.style.bottom = floor + 'px';
+      } else if (state === 'gameover') {
+        playerEl.style.width = '120px';
+        playerEl.style.height = '70px';
+        playerEl.style.bottom = floor + 'px';
+      } else {
+        playerEl.style.width = '80px';
+        playerEl.style.height = '104px';
+        playerEl.style.bottom = (floor + playerY) + 'px';
+      }
+
+      // 顧北辰（固定尺寸即可）
       guEl.style.left = guX + 'px';
       guEl.style.bottom = floor + 'px';
+      guEl.style.width = '96px';
+      guEl.style.height = '128px';
+      guEl.style.transform = '';
+
       updateSprites();
+
+      // 障礙物
       obstacles.forEach((obs) => {
         obs.el.style.left = obs.x + 'px';
         obs.el.style.bottom = obs.type === 'plant' ? floor + 'px' : (floor + 70) + 'px';
       });
+
+      // 終點大門
       const door = document.querySelector('.door');
       if (door) {
         door.style.left = DOOR_X + 'px';
@@ -361,9 +397,10 @@
       const type = Math.random() > 0.5 ? 'plant' : 'chandelier';
       const el = document.createElement('div');
       el.className = 'obstacle ' + type;
-      if (type === 'chandelier') {
-        el.innerHTML = '<img src="lamp.png" alt="">';
-      }
+      const img = document.createElement('img');
+      img.alt = type;
+      img.src = type === 'plant' ? '/game/game5/plant.png' : '/game/game5/lamp.png';
+      el.appendChild(img);
       arena.appendChild(el);
       obstacles.push({ id: Date.now(), type, x: arena.clientWidth + 20, passed: false, el });
     }
@@ -372,14 +409,15 @@
       if (document.querySelector('.door')) return;
       const door = document.createElement('div');
       door.className = 'door';
+      const img = document.createElement('img');
+      img.src = '/game/game5/gate.png';
+      img.alt = 'gate';
+      door.appendChild(img);
       arena.appendChild(door);
     }
 
     function jump() {
-      if (state === 'start' || state === 'gameover') {
-        startGame();
-        return;
-      }
+      if (state === 'start' || state === 'gameover') { startGame(); return; }
       if (state !== 'playing') return;
       if (!isJumping && playerY === 0) {
         isJumping = true;
@@ -395,15 +433,20 @@
 
     function mash() {
       if (state === 'paused_for_final') startFinalPhase();
-      else if (state === 'final') playerX += 22;
+      else if (state === 'final') playerX += MASH_BOOST;
     }
 
-    function loop() {
+    function loop(timestamp) {
       frameId = requestAnimationFrame(loop);
+      const dt = timestamp - lastTime;
+      if (dt < INTERVAL) return;
+      lastTime = timestamp - (dt % INTERVAL);
+
       if (state !== 'playing' && state !== 'final') {
         updateLayout();
         return;
       }
+
       tick += 1;
       if (tick % 8 === 0) animFrame = animFrame === 1 ? 2 : 1;
 
@@ -419,7 +462,8 @@
 
       if (state === 'playing') {
         progress += 1;
-        if (guX > -150) guX -= .5;
+        if (guX > -150) guX -= GU_RETREAT_SPEED;
+
         obstacleTimer += 1;
         if (obstacleTimer > 50 + Math.random() * 40 && progress < GOAL_DISTANCE) {
           obstacleTimer = 0;
@@ -429,7 +473,7 @@
         let damage = 0;
         obstacles.forEach((obs) => {
           obs.x -= OBSTACLE_SPEED;
-          const width = obs.type === 'plant' ? 46 : 64;
+          const width = obs.type === 'plant' ? 40 : 60;
           const collidingX = obs.x < playerX + 50 && obs.x + width > playerX;
           if (collidingX && !obs.passed) {
             const hitPlant = obs.type === 'plant' && playerY < 45;
@@ -440,25 +484,30 @@
             }
           }
         });
+
         if (damage) {
           hp -= damage;
           if (hp <= 0) setState('gameover');
         }
+
         obstacles = obstacles.filter((obs) => {
           if (obs.x > -120) return true;
           obs.el.remove();
           return false;
         });
+
         if (progress >= GOAL_DISTANCE) {
           obstacles.forEach((obs) => obs.el.remove());
           obstacles = [];
           setState('paused_for_final');
         }
+
       } else if (state === 'final') {
-        guX += 2.5;
+        guX += GU_CHASE_SPEED;
         if (guX + 50 >= playerX) setState('gameover');
         if (playerX + 40 >= DOOR_X) setState('won');
       }
+
       updateLayout();
     }
 
@@ -468,9 +517,11 @@
       if (e.code === 'ArrowDown') duck(true);
       if (e.code === 'Space' && !e.repeat) mash();
     }, { passive: false });
+
     document.addEventListener('keyup', (e) => {
       if (e.code === 'ArrowDown') duck(false);
     });
+
     pauseBtn.addEventListener('click', () => setState(state === 'playing' ? 'paused' : 'playing'));
     jumpBtn.addEventListener('pointerdown', jump);
     duckBtn.addEventListener('pointerdown', () => duck(true));
@@ -479,7 +530,7 @@
 
     renderOverlay();
     updateLayout();
-    loop();
+    frameId = requestAnimationFrame(loop);
   </script>
 </body>
 </html>
