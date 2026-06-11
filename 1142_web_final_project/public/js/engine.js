@@ -40,6 +40,7 @@ const choicesEl     = document.getElementById('choices');
 const nextHint      = document.getElementById('next-hint');
 const bgmEl         = document.getElementById('bgm');
 const sfxEl         = document.getElementById('sfx');
+const dialogCard    = document.getElementById('dialog-card');
 
 // ── 初始化 ──────────────────────────────────────────
 function init() {
@@ -76,6 +77,9 @@ function init() {
     localStorage.removeItem('pendingResult');
     localStorage.removeItem('gameReturnTo');
   }
+
+  // 確定不會導向結局頁，才顯示對話框（避免閃現預設對話框）
+  if (dialogCard) dialogCard.style.visibility = 'visible';
 
   document.addEventListener('click', advance);
   document.addEventListener('keydown', e => {

@@ -193,6 +193,8 @@ html, body {
   min-height: 100px;
   z-index: 20;
   background: url('/dialog.png') center bottom / 100% 100% no-repeat;
+  /* 初始隱藏，避免導向結局頁前閃現預設對話框；engine.js 確認不導向後才顯示 */
+  visibility: hidden;
 }
 
 #dialog-content {
