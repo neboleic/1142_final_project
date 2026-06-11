@@ -689,5 +689,20 @@
 
         startGame();
     </script>
+
+    <!-- BGM：從主線 localStorage 繼續播放 -->
+    <audio id="game-bgm" loop></audio>
+    <script>
+    (function initBgm() {
+        const src = localStorage.getItem('bgmSrc');
+        if (!src) return;
+        const bgm = document.getElementById('game-bgm');
+        bgm.src = src;
+        bgm.volume = 0.5;
+        bgm.play().catch(() => {
+            document.addEventListener('click', () => bgm.play().catch(() => {}), { once: true });
+        });
+    })();
+    </script>
 </body>
 </html>
