@@ -771,8 +771,8 @@ body::after {
                 osc.frequency.setValueAtTime(145, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(38, audioCtx.currentTime + 0.055);
 
-                gain.gain.setValueAtTime(0.28, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.055);
+                gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.055);
 
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
