@@ -23,7 +23,7 @@ export default function ScenePage() {
           <div id="narration-box" style={{ display: 'none' }}>
             <p id="narration-text"></p>
           </div>
-          <p id="dialog-text">對話對話</p>
+          <p id="dialog-text"></p>
           <div id="choices" style={{ display: 'none' }}></div>
           <div id="next-hint" className="blink">▼</div>
         </div>
