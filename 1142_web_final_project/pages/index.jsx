@@ -31,9 +31,9 @@ export default function TitleScreen() {
 
       <div id="volume-panel" style={{ display: 'none' }}>
         <span className="vol-label">音量</span>
-        <input type="range" id="volume-slider" min="0" max="100" step="1" defaultValue="100"
+        <input type="range" id="volume-slider" min="0" max="100" step="1" defaultValue="50"
                onClick={(e) => e.stopPropagation()} />
-        <span className="vol-label" id="vol-pct">100%</span>
+        <span className="vol-label" id="vol-pct">50%</span>
       </div>
 
       <audio id="bgm" src="/backing_sound.mp3" loop />
@@ -45,6 +45,8 @@ export default function TitleScreen() {
         const pctEl  = document.getElementById('vol-pct');
         const icon   = document.getElementById('volume-icon');
         const panel  = document.getElementById('volume-panel');
+
+        bgm.volume = slider.value / 100;
 
         function showToast(msg) {
           let toast = document.getElementById('game-toast');

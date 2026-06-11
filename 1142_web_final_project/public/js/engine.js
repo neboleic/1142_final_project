@@ -310,10 +310,17 @@ function toggleVolume() {
   panel.style.display = isOpen ? 'none' : 'flex';
 }
 
+const DEFAULT_VOLUME = 0.5;
+
 function _initVolumeSlider() {
   const slider = document.getElementById('volume-slider');
   const pctLabel = document.getElementById('vol-pct');
   if (!slider) return;
+
+  bgmEl.volume = DEFAULT_VOLUME;
+  sfxEl.volume = DEFAULT_VOLUME;
+  slider.value = DEFAULT_VOLUME * 100;
+  if (pctLabel) pctLabel.textContent = slider.value + '%';
 
   slider.addEventListener('input', () => {
     const vol = slider.value / 100;

@@ -40,9 +40,9 @@ export default function ScenePage() {
 
       <div id="volume-panel" style={{ display: 'none' }}>
         <span className="vol-label">音量</span>
-        <input type="range" id="volume-slider" min="0" max="100" step="1" defaultValue="100"
+        <input type="range" id="volume-slider" min="0" max="100" step="1" defaultValue="50"
                onClick={(e) => e.stopPropagation()} />
-        <span className="vol-label" id="vol-pct">100%</span>
+        <span className="vol-label" id="vol-pct">50%</span>
       </div>
 
       <div id="menu-overlay" style={{ display: 'none' }}>

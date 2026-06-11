@@ -13,7 +13,7 @@ const winScr = document.getElementById('win-screen');
   if (!src) return;
   const bgm = document.getElementById('game-bgm');
   bgm.src = src;
-  bgm.volume = 0.8;
+  bgm.volume = 0.5;
   bgm.play().catch(() => {
     document.addEventListener('click', () => bgm.play().catch(() => {}), { once: true });
   });

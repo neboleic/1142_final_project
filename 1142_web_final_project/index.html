@@ -39,9 +39,9 @@
   <!-- 音量面板（reuse game screen的 #volume-panel CSS，封面另有 fixed 定位覆蓋） -->
   <div id="volume-panel" style="display:none">
     <span class="vol-label">音量</span>
-    <input type="range" id="volume-slider" min="0" max="100" step="1" value="100"
+    <input type="range" id="volume-slider" min="0" max="100" step="1" value="50"
            onclick="event.stopPropagation();">
-    <span class="vol-label" id="vol-pct">100%</span>
+    <span class="vol-label" id="vol-pct">50%</span>
   </div>
 
   <!-- src 直接寫在 audio 標籤上；用 <source> 時 bgm.src 會是空字串導致無法播放 -->
@@ -54,6 +54,9 @@
     const pctEl  = document.getElementById('vol-pct');
     const icon   = document.getElementById('volume-icon');
     const panel  = document.getElementById('volume-panel');
+
+    // ── 預設音量 ─────────────────────────────────────
+    bgm.volume = slider.value / 100;
 
     // ── 按鈕音效 ─────────────────────────────────────
     function playBtnSound() {
