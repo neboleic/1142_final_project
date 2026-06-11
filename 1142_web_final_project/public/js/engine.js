@@ -29,6 +29,7 @@ function updateCharacterSprite(speaker) {
 
 // DOM 元素
 const sceneBg       = document.getElementById('scene-bg');
+const scenePropsEl  = document.getElementById('scene-props');
 const charSprite    = document.getElementById('character-sprite');
 const speakerBar    = document.getElementById('speaker-bar');
 const speakerName   = document.getElementById('speaker-name');
@@ -92,6 +93,39 @@ function init() {
   advance();
 }
 
+function renderSceneProps(props) {
+  if (!scenePropsEl) return;
+  scenePropsEl.innerHTML = '';
+  if (!props || props.length === 0) {
+    scenePropsEl.style.display = 'none';
+    return;
+  }
+  scenePropsEl.style.display = 'block';
+  props.forEach((prop) => {
+    const img = document.createElement('img');
+    img.className = 'scene-prop';
+    img.src = prop.src;
+    img.alt = '';
+    if (prop.left) img.style.left = prop.left;
+    if (prop.top) img.style.top = prop.top;
+    if (prop.width) img.style.width = prop.width;
+    if (prop.blend) img.style.mixBlendMode = prop.blend;
+    if (prop.filter) img.style.filter = prop.filter;
+    scenePropsEl.appendChild(img);
+  });
+}
+
+function syncScenePropsFromIndex(idx) {
+  for (let i = idx; i >= 0; i--) {
+    const line = DIALOGUE[i];
+    if (line.type === 'scene') {
+      renderSceneProps(line.props);
+      return;
+    }
+  }
+  renderSceneProps([]);
+}
+
 // ── 角色立繪定位：以對話框實際高度為錨點 ────────────────
 function syncCharacterToDialog() {
   const dialogCard = document.getElementById('dialog-card');
@@ -117,6 +151,8 @@ function advance() {
 
 function showLine(idx) {
   if (idx >= DIALOGUE.length) return;
+
+  syncScenePropsFromIndex(idx);
 
   const line = DIALOGUE[idx];
 

@@ -146,6 +146,21 @@ html, body {
   z-index: 1;
 }
 
+#scene-props {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scene-prop {
+  position: absolute;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+}
+
 /* 閫蝡鼓嚗ottom ??JS syncCharacterToDialog() ??閮剖?嚗???閰望?撖阡?擃漲 */
 #character-wrap {
   position: absolute;

@@ -18,6 +18,7 @@ const ASSETS = {
   kitchen: 'public/kitchen.png',
   storage: 'public/storage.png',
   out: 'public/out.png',
+  teacup: 'game/game3/teacup-clear.png?v=2',
   man: 'public/figure_man.png',
   sfxLine: 'public/sfx_line.mp3',
   sfxDoor: 'public/sfx_door.mp3',
@@ -104,7 +105,17 @@ const DIALOGUE = [
   { type: 'game', gameId: 2, src: GAMES.powerSwitch },
 
   // ── 場景 3：咖啡廳前台 ─────────────────────────────
-  { type: 'scene', bg: ASSETS.bar, character: '' },
+  {
+    type: 'scene',
+    bg: ASSETS.bar,
+    character: '',
+    props: [{
+      src: ASSETS.teacup,
+      left: '30%',
+      top: '37%',
+      width: '4%',
+    }],
+  },
 
   { type: 'dialogue', speaker: '店長', text: '燈怎麼滅掉了？' },
   { type: 'dialogue', speaker: '店長', text: '是誰把我關起來了！！！' },

@@ -10,6 +10,7 @@ export default function ScenePage() {
       </Head>
 
       <div id="scene-bg"></div>
+      <div id="scene-props"></div>
 
       <div id="character-wrap">
         <img id="character-sprite" src="" alt="" style={{ display: 'none' }} />

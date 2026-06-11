@@ -140,6 +140,21 @@ body.game-screen {
   z-index: 1;
 }
 
+#scene-props {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scene-prop {
+  position: absolute;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+}
+
 /* 角色立繪：bottom 由 JS syncCharacterToDialog() 動態設定，讀取對話框實際高度 */
 #character-wrap {
   position: absolute;
