@@ -261,7 +261,7 @@ document.getElementById('key-container').addEventListener('click', () => {
 
 document.getElementById('btn-giveup').addEventListener('click', () => {
   showConfirm(() => {
-    localStorage.setItem('pendingResult', 'fail');
+    localStorage.setItem('pendingResult', 'success');
     window.location.href = '/scene';
   });
 });
